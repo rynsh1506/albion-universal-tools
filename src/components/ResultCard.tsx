@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   TrendingUp,
   TrendingDown,
@@ -39,7 +38,6 @@ export default function ResultCard({ data }: any) {
     totalProduced > 0 ? Math.ceil(netProdCost / totalProduced) : 0;
   const recommendedPrice = Math.ceil(breakEvenPrice * 1.15);
 
-  // --- PERBAIKAN: Kalkulasi dinamis untuk Cost / Item dan Profit / Item ---
   const costPerItem =
     data.costPerItem ||
     (totalProduced > 0 ? Math.ceil(netProdCost / totalProduced) : 0);
@@ -67,14 +65,13 @@ export default function ResultCard({ data }: any) {
   }) => (
     <div
       className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3
-                    bg-base-100/95 backdrop-blur-xl text-base-content p-4 rounded-2xl 
+                    bg-base-200 text-base-content p-4 rounded-2xl 
                     shadow-xl border border-base-content/10
                     opacity-0 invisible group-hover/tip:opacity-100 group-hover/tip:visible 
-                    translate-y-1 group-hover/tip:translate-y-0 
-                    transition-all duration-200 z-9999 w-max min-w-60 
+                    transition-opacity duration-100 z-9999 w-max min-w-60 
                     origin-bottom pointer-events-none"
     >
-      <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-base-100/95 rotate-45 border-b border-r border-base-content/10"></div>
+      <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-base-200 rotate-45 border-b border-r border-base-content/10"></div>
       <p className="text-[10px] font-black uppercase text-primary mb-2 border-b border-base-content/10 pb-1.5 tracking-widest">
         {title}
       </p>
@@ -90,7 +87,7 @@ export default function ResultCard({ data }: any) {
       className="w-full relative space-y-6 select-none outline-none"
     >
       <div
-        className={`relative z-10 px-7 py-5 flex justify-between items-center rounded-[1.75rem] border border-base-content/10 backdrop-blur-md transition-all duration-500 shadow-sm ${isDefaultStyle ? "bg-base-content/5" : isProfit ? "bg-success/10 border-success/20" : "bg-error/10 border-error/20"}`}
+        className={`relative z-10 px-7 py-5 flex justify-between items-center rounded-[1.75rem] border border-base-content/10 shadow-sm ${isDefaultStyle ? "bg-base-content/5" : isProfit ? "bg-success/10 border-success/20" : "bg-error/10 border-error/20"}`}
       >
         <div className="absolute inset-0 rounded-[1.75rem] overflow-hidden pointer-events-none">
           <div
@@ -100,7 +97,7 @@ export default function ResultCard({ data }: any) {
 
         <div className="flex items-center gap-6 z-10">
           <div
-            className={`p-4 rounded-2xl shadow-sm transition-all duration-500 backdrop-blur-xl border border-white/5 ${
+            className={`p-4 rounded-2xl shadow-sm border border-white/5 ${
               isDefaultStyle
                 ? "bg-base-content/10 text-base-content/50"
                 : isProfit
@@ -122,7 +119,7 @@ export default function ResultCard({ data }: any) {
             <h2 className="text-base font-black uppercase tracking-[0.15em] flex items-center gap-3">
               {isWaiting ? "---" : data.name}
               <span
-                className={`font-black text-[10px] tracking-widest px-2.5 py-1 rounded-lg transition-all ${
+                className={`font-black text-[10px] tracking-widest px-2.5 py-1 rounded-lg ${
                   isDefaultStyle
                     ? "bg-base-content/10 opacity-40"
                     : focusShortage && data.useFocus
@@ -142,7 +139,7 @@ export default function ResultCard({ data }: any) {
             </h2>
             <div className="flex gap-5 items-center mt-1">
               <span
-                className={`text-2xl font-black tracking-tight transition-colors duration-500 ${!isDefaultStyle && (isProfit ? "text-success" : "text-error")}`}
+                className={`text-2xl font-black tracking-tight ${!isDefaultStyle && (isProfit ? "text-success" : "text-error")}`}
               >
                 {isProfit && !isDefaultStyle ? "+" : ""}
                 {data.realProfit ? data.realProfit.toLocaleString() : "0"}{" "}
@@ -160,7 +157,7 @@ export default function ResultCard({ data }: any) {
         <button
           onClick={handleCopyReport}
           disabled={isDefaultStyle}
-          className="btn btn-ghost btn-square opacity-40 hover:opacity-100 transition-all text-base-content rounded-xl border-none shadow-none"
+          className="btn btn-ghost btn-square opacity-40 hover:opacity-100 text-base-content rounded-xl border-none shadow-none"
         >
           {copied ? (
             <CheckCircle2 size={20} className="text-success" />
@@ -171,61 +168,31 @@ export default function ResultCard({ data }: any) {
       </div>
 
       <div className="z-0 flex flex-col gap-3">
-        <AnimatePresence>
-          {materialShortage && !isNonCraftable && (
-            <motion.div
-              key="warning-market"
-              initial={{ height: 0, opacity: 0, y: -10, overflow: "hidden" }}
-              animate={{ height: "auto", opacity: 1, y: 0 }}
-              exit={{
-                height: 0,
-                opacity: 0,
-                y: -10,
-                transition: { duration: 0.2 },
-              }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-            >
-              <div className="bg-error/10 backdrop-blur-md p-4 rounded-2xl flex items-center gap-4 border border-error/20 shadow-sm">
-                <AlertOctagon size={20} className="text-error" />
-                <span className="text-[11px] font-black uppercase tracking-widest text-base-content">
-                  Material limited to{" "}
-                  <span className="text-error font-bold">
-                    {data.marketLimitedQty}
-                  </span>{" "}
-                  crafts
-                </span>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {materialShortage && !isNonCraftable && (
+          <div className="bg-error/10 p-4 rounded-2xl flex items-center gap-4 border border-error/20 shadow-sm">
+            <AlertOctagon size={20} className="text-error" />
+            <span className="text-[11px] font-black uppercase tracking-widest text-base-content">
+              Material limited to{" "}
+              <span className="text-error font-bold">
+                {data.marketLimitedQty}
+              </span>{" "}
+              crafts
+            </span>
+          </div>
+        )}
 
-        <AnimatePresence>
-          {focusShortage && !isNonCraftable && (
-            <motion.div
-              key="warning-focus"
-              initial={{ height: 0, opacity: 0, y: -10, overflow: "hidden" }}
-              animate={{ height: "auto", opacity: 1, y: 0 }}
-              exit={{
-                height: 0,
-                opacity: 0,
-                y: -10,
-                transition: { duration: 0.2 },
-              }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-            >
-              <div className="bg-warning/10 backdrop-blur-md p-4 rounded-2xl flex items-center gap-4 border border-warning/20 shadow-sm">
-                <AlertTriangle size={20} className="text-warning" />
-                <span className="text-[11px] font-black uppercase tracking-widest text-base-content">
-                  Focus points limited to{" "}
-                  <span className="text-warning font-bold">
-                    {data.focusLimitedQty}
-                  </span>{" "}
-                  crafts
-                </span>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {focusShortage && !isNonCraftable && (
+          <div className="bg-warning/10 p-4 rounded-2xl flex items-center gap-4 border border-warning/20 shadow-sm">
+            <AlertTriangle size={20} className="text-warning" />
+            <span className="text-[11px] font-black uppercase tracking-widest text-base-content">
+              Focus points limited to{" "}
+              <span className="text-warning font-bold">
+                {data.focusLimitedQty}
+              </span>{" "}
+              crafts
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-4 gap-4 relative z-20">
@@ -237,14 +204,12 @@ export default function ResultCard({ data }: any) {
             tip: "Total profit percentage after all fees",
           },
           {
-            // --- PERBAIKAN: Menggunakan variabel profitPerItem yang sudah dikalkulasi ---
             label: "Profit / Item",
             val: `${profitPerItem.toLocaleString()} S`,
             color: isProfit ? "text-success" : "text-error",
             tip: "Net profit earned per single output item",
           },
           {
-            // --- PERBAIKAN: Menggunakan variabel costPerItem yang sudah dikalkulasi ---
             label: "Cost / Item",
             val: `${costPerItem.toLocaleString()} S`,
             color: "text-warning",
@@ -259,7 +224,7 @@ export default function ResultCard({ data }: any) {
         ].map((stat, i) => (
           <div
             key={i}
-            className="bg-base-200/40 backdrop-blur-md p-5 rounded-2xl border border-base-content/5 relative group/tip cursor-help hover:border-base-content/10 transition-all shadow-sm"
+            className="bg-base-200/90 p-5 rounded-2xl border border-base-content/5 relative group/tip cursor-help hover:border-base-content/10 shadow-sm"
           >
             <div className={isDefaultStyle ? "opacity-30" : ""}>
               <p className="text-[10px] font-black uppercase opacity-40 mb-2 flex items-center gap-2">
@@ -300,7 +265,7 @@ export default function ResultCard({ data }: any) {
         ].map((box, i) => (
           <div
             key={i}
-            className="bg-base-200/40 backdrop-blur-md p-6 rounded-2xl border border-base-content/5 relative group/tip cursor-help shadow-sm hover:border-base-content/10 transition-all"
+            className="bg-base-200/90 p-6 rounded-2xl border border-base-content/5 relative group/tip cursor-help shadow-sm hover:border-base-content/10"
           >
             <div className={isDefaultStyle ? "opacity-30" : ""}>
               <div className={`flex items-center gap-2 mb-3 text-${box.color}`}>
@@ -323,7 +288,7 @@ export default function ResultCard({ data }: any) {
         ))}
       </div>
 
-      <div className="relative z-0 border border-base-content/10 rounded-3xl bg-base-200/20 backdrop-blur-sm overflow-hidden shadow-sm">
+      <div className="relative z-0 border border-base-content/10 rounded-3xl bg-base-200/50 overflow-hidden shadow-sm">
         <table className="w-full text-xs text-left border-collapse border-none">
           <thead className="bg-base-content/5 text-[10px] font-black uppercase opacity-40 tracking-[0.2em] border-b border-base-content/5">
             <tr>
@@ -358,7 +323,7 @@ export default function ResultCard({ data }: any) {
               data.buyList.map((m: any) => (
                 <tr
                   key={m.name}
-                  className="border-b border-base-content/5 last:border-none hover:bg-base-content/5 transition-all"
+                  className="border-b border-base-content/5 last:border-none hover:bg-base-content/5"
                 >
                   <td className="px-6 py-4 text-info font-black truncate max-w-56 border-none">
                     {m.name}
@@ -384,7 +349,7 @@ export default function ResultCard({ data }: any) {
 
       <div className="grid grid-cols-2 gap-8 relative z-40">
         <div className="relative group/tip">
-          <div className="p-6 bg-base-content/5 backdrop-blur-md rounded-3xl border border-base-content/5 flex justify-between items-center shadow-sm hover:bg-base-content/10 transition-all cursor-help">
+          <div className="p-6 bg-base-content/5 rounded-3xl border border-base-content/5 flex justify-between items-center shadow-sm hover:bg-base-content/10 cursor-help">
             <span
               className={`text-[10px] font-black uppercase opacity-60 tracking-[0.15em] ${isDefaultStyle ? "opacity-20" : ""}`}
             >
@@ -419,7 +384,7 @@ export default function ResultCard({ data }: any) {
         </div>
 
         <div className="relative group/tip">
-          <div className="p-6 bg-base-content/5 backdrop-blur-md rounded-3xl border border-base-content/5 flex justify-between items-center shadow-sm hover:bg-base-content/10 transition-all cursor-help">
+          <div className="p-6 bg-base-content/5 rounded-3xl border border-base-content/5 flex justify-between items-center shadow-sm hover:bg-base-content/10 cursor-help">
             <span
               className={`text-[10px] font-black uppercase opacity-60 tracking-[0.15em] ${isDefaultStyle ? "opacity-20" : ""}`}
             >

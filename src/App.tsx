@@ -4,7 +4,6 @@ import { listen } from "@tauri-apps/api/event";
 import { Sidebar } from "./components/Sidebar";
 import MainDisplay from "./components/MainDisplay";
 import { SearchModal } from "./components/SearchModal";
-import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { useCraftingStore } from "./store/useCraftingStore";
 import AveragePriceModal from "./components/AveragePriceModal";
@@ -144,42 +143,37 @@ export default function App() {
   return (
     <div
       data-theme={isDarkMode ? "dark" : "light"}
-      className="h-screen w-screen flex overflow-hidden font-sans bg-base-300 text-base-content transition-colors duration-300 isolate relative"
+      className="h-screen w-screen flex overflow-hidden font-sans bg-base-300 text-base-content isolate relative"
     >
-      <AnimatePresence>
-        {notification && (
-          <div className="fixed top-0 left-0 w-full flex justify-center z-999 pointer-events-none">
-            <motion.div
-              initial={{ y: -50, opacity: 0 }}
-              animate={{ y: 24, opacity: 1 }}
-              exit={{ y: -50, opacity: 0 }}
-              className={`px-5 py-3 rounded-2xl border backdrop-blur-xl shadow-2xl flex items-center justify-center gap-3 w-max max-w-[90vw] pointer-events-auto ${
-                notification.type === "success"
-                  ? "bg-success/10 border-success/30 text-success"
-                  : "bg-error/10 border-error/30 text-error"
-              }`}
-            >
-              {notification.type === "success" ? (
-                <CheckCircle2 size={18} />
-              ) : (
-                <XCircle size={18} />
-              )}
-              <span className="text-xs font-black uppercase tracking-widest text-center">
-                {notification.msg}
-              </span>
-            </motion.div>
+      {/* Notifikasi Instan Tanpa Framer Motion & Tanpa Efek Kaca */}
+      {notification && (
+        <div className="fixed top-6 left-0 w-full flex justify-center z-9999 pointer-events-none">
+          <div
+            className={`px-6 py-3 rounded-xl border shadow-lg flex items-center justify-center gap-3 w-max max-w-[90vw] pointer-events-auto ${
+              notification.type === "success"
+                ? "bg-success text-success-content border-success-content/20"
+                : "bg-error text-error-content border-error-content/20"
+            }`}
+          >
+            {notification.type === "success" ? (
+              <CheckCircle2 size={18} />
+            ) : (
+              <XCircle size={18} />
+            )}
+            <span className="text-xs font-black uppercase tracking-widest text-center">
+              {notification.msg}
+            </span>
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
 
-      <AnimatePresence>
-        {calcModalMatId && (
-          <AveragePriceModal
-            matId={calcModalMatId}
-            onClose={() => setCalcModalMatId(null)}
-          />
-        )}
-      </AnimatePresence>
+      {/* Modal Instan Tanpa AnimatePresence */}
+      {calcModalMatId && (
+        <AveragePriceModal
+          matId={calcModalMatId}
+          onClose={() => setCalcModalMatId(null)}
+        />
+      )}
 
       <Sidebar
         activeTab={activeTab}

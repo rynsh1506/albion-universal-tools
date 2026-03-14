@@ -36,14 +36,14 @@ export const StrategyTabContent = ({ rrr }: { rrr: number }) => {
     )
       return null;
     return (
-      <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-primary/90 backdrop-blur-md text-primary-content px-3 py-1.5 rounded-lg text-[10px] font-black shadow-[0_0_15px_rgba(var(--p),0.4)] opacity-0 translate-y-1 pointer-events-none group-hover/input:opacity-100 group-hover/input:translate-y-0 transition-all duration-300 z-100 flex items-center gap-2 border border-white/20 whitespace-nowrap overflow-hidden">
+      <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-primary-content px-3 py-1.5 rounded-lg text-[10px] font-black shadow-sm opacity-0 invisible pointer-events-none group-hover/input:opacity-100 group-hover/input:visible transition-opacity duration-100 z-100 flex items-center gap-2 border border-white/20 whitespace-nowrap overflow-hidden">
         <Eye size={12} /> {Number(value).toLocaleString("en-US")} {label}
       </div>
     );
   };
 
   return (
-    <div className="space-y-6 animate-tab text-base-content isolate pt-2">
+    <div className="space-y-6 text-base-content isolate pt-2">
       <div>
         <h3 className="text-[10px] font-black text-primary uppercase flex items-center gap-2 tracking-[0.2em] opacity-80 select-none mb-4">
           <Percent size={12} strokeWidth={2.5} /> RRR Modifiers
@@ -62,7 +62,7 @@ export const StrategyTabContent = ({ rrr }: { rrr: number }) => {
                 type="text"
                 inputMode="decimal"
                 placeholder="0"
-                className="w-full bg-base-content/5 border border-base-content/10 rounded-xl py-2 px-3 text-sm font-black outline-none focus:border-primary/50 focus:bg-primary/5 transition-all placeholder:opacity-30"
+                className="w-full bg-base-content/5 border border-base-content/10 rounded-xl py-2 px-3 text-sm font-black outline-none focus:border-primary/50 focus:bg-primary/5 transition-colors duration-100 placeholder:opacity-30"
                 value={item.val}
                 onKeyDown={blockInvalidCharFloat}
                 onChange={(e) => {
@@ -93,7 +93,7 @@ export const StrategyTabContent = ({ rrr }: { rrr: number }) => {
               type="text"
               inputMode="numeric"
               placeholder="0"
-              className="w-full bg-base-content/5 border border-base-content/10 rounded-xl py-2.5 px-4 text-sm font-black outline-none focus:border-primary/50 focus:bg-primary/5 transition-all placeholder:opacity-30"
+              className="w-full bg-base-content/5 border border-base-content/10 rounded-xl py-2.5 px-4 text-sm font-black outline-none focus:border-primary/50 focus:bg-primary/5 transition-colors duration-100 placeholder:opacity-30"
               value={s.stationFee}
               onKeyDown={blockInvalidCharInt}
               onChange={(e) => {
@@ -110,14 +110,14 @@ export const StrategyTabContent = ({ rrr }: { rrr: number }) => {
             <div className="w-full bg-base-content/5 border border-base-content/10 rounded-xl py-2.5 px-4 text-sm text-primary font-black flex items-center cursor-help">
               {displayRrr}%
             </div>
-            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-primary/90 backdrop-blur-md text-primary-content px-3 py-1.5 rounded-lg text-[10px] font-black opacity-0 translate-y-1 group-hover/input:opacity-100 transition-all z-100 border border-white/20 whitespace-nowrap">
+            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-primary-content px-3 py-1.5 rounded-lg text-[10px] font-black opacity-0 invisible group-hover/input:opacity-100 group-hover/input:visible transition-opacity duration-100 z-100 border border-white/20 whitespace-nowrap shadow-sm">
               <Eye size={12} className="inline mr-2" />
               {displayRrr} %
             </div>
           </div>
         </div>
 
-        <label className="w-full flex items-center justify-between cursor-pointer bg-base-content/5 hover:bg-base-content/10 border border-base-content/10 px-4 py-3 rounded-xl transition-colors group">
+        <label className="w-full flex items-center justify-between cursor-pointer bg-base-content/5 hover:bg-base-content/10 border border-base-content/10 px-4 py-3 rounded-xl transition-colors duration-100 group">
           <span className="text-[10px] font-black uppercase opacity-70 flex items-center gap-2">
             <Zap
               size={14}
@@ -136,7 +136,7 @@ export const StrategyTabContent = ({ rrr }: { rrr: number }) => {
         </label>
 
         {s.useFocus && (
-          <div className="grid grid-cols-2 gap-4 mt-3 animate-in fade-in slide-in-from-top-2">
+          <div className="grid grid-cols-2 gap-4 mt-3">
             <div className="group/input relative">
               <label className="text-[9px] font-black opacity-50 mb-1.5 uppercase tracking-wider flex items-center gap-1.5">
                 <Zap size={10} className="text-warning fill-warning" /> Focus
@@ -146,7 +146,7 @@ export const StrategyTabContent = ({ rrr }: { rrr: number }) => {
                 type="text"
                 inputMode="numeric"
                 placeholder="0"
-                className="w-full bg-warning/5 border border-warning/20 rounded-xl py-2.5 px-4 text-sm text-warning font-black outline-none focus:border-warning/50 placeholder:opacity-30"
+                className="w-full bg-warning/5 border border-warning/20 rounded-xl py-2.5 px-4 text-sm text-warning font-black outline-none focus:border-warning/50 transition-colors duration-100 placeholder:opacity-30"
                 value={s.focusCost}
                 onKeyDown={blockInvalidCharInt}
                 onChange={(e) => s.setFocusCost(cleanIntString(e.target.value))}
@@ -161,7 +161,7 @@ export const StrategyTabContent = ({ rrr }: { rrr: number }) => {
                 type="text"
                 inputMode="numeric"
                 placeholder="0"
-                className="w-full bg-success/5 border border-success/30 rounded-xl py-2.5 px-4 text-sm text-success font-black outline-none focus:border-success/70 placeholder:opacity-30"
+                className="w-full bg-success/5 border border-success/30 rounded-xl py-2.5 px-4 text-sm text-success font-black outline-none focus:border-success/70 transition-colors duration-100 placeholder:opacity-30"
                 value={s.focusBank}
                 onKeyDown={blockInvalidCharInt}
                 onChange={handleFocusBankInput}

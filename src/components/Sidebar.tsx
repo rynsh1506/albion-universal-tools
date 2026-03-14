@@ -13,7 +13,6 @@ import {
   ClipboardList,
   Package,
 } from "lucide-react";
-import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useCraftingStore } from "../store/useCraftingStore";
 
 export const Sidebar = ({
@@ -40,42 +39,26 @@ export const Sidebar = ({
     position?: "top" | "bottom";
   }) => (
     <div
-      className={`absolute ${position === "top" ? "-top-10" : "-bottom-10"} left-1/2 -translate-x-1/2 bg-base-content/95 backdrop-blur-sm text-base-100 px-3 py-1.5 rounded-lg text-[10px] font-black tracking-wide shadow-2xl opacity-0 ${position === "top" ? "translate-y-2" : "-translate-y-2"} pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all z-100 border border-base-content/10 whitespace-nowrap flex flex-col items-center transform-gpu`}
+      className={`absolute ${position === "top" ? "-top-10" : "-bottom-10"} left-1/2 -translate-x-1/2 bg-base-content text-base-100 px-3 py-1.5 rounded-lg text-[10px] font-black tracking-wide shadow-xl opacity-0 ${position === "top" ? "translate-y-2" : "-translate-y-2"} pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-opacity duration-100 z-100 border border-base-content/10 whitespace-nowrap flex flex-col items-center`}
     >
       {position === "bottom" && (
-        <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-base-content/95 rotate-45"></div>
+        <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-base-content rotate-45"></div>
       )}
       <span>{text}</span>
       {position === "top" && (
-        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-base-content/95 rotate-45"></div>
+        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-base-content rotate-45"></div>
       )}
     </div>
   );
 
-  const tabVariants: Variants = {
-    hidden: { opacity: 0, x: -10, filter: "blur(4px)" },
-    enter: {
-      opacity: 1,
-      x: 0,
-      filter: "blur(0px)",
-      transition: { duration: 0.3, ease: "easeOut" },
-    },
-    exit: {
-      opacity: 0,
-      x: 10,
-      filter: "blur(4px)",
-      transition: { duration: 0.2, ease: "easeIn" },
-    },
-  };
-
   const TAB_LIST = ["Batch", "Strategy", "Recipe"];
 
   return (
-    <aside className="w-95 h-full flex flex-col bg-base-200/80 backdrop-blur-2xl border-r border-base-content/5 z-20 shrink-0 transition-colors duration-500 isolate shadow-[5px_0_30px_rgba(0,0,0,0.1)]">
+    <aside className="w-95 h-full flex flex-col bg-base-200 border-r border-base-content/5 z-20 shrink-0 shadow-[5px_0_30px_rgba(0,0,0,0.1)]">
       <div className="p-6 pb-4">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-default">
-            <div className="bg-primary/10 p-2.5 rounded-xl border border-primary/20 shadow-[0_0_15px_rgba(var(--p),0.2)] transition-all group-hover:bg-primary/20 group-hover:scale-105 duration-300 transform-gpu">
+            <div className="bg-primary/10 p-2.5 rounded-xl border border-primary/20 shadow-sm transition-colors group-hover:bg-primary/20">
               <Swords size={24} className="text-primary stroke-[1.5px]" />
             </div>
             <div className="flex flex-col justify-center">
@@ -92,7 +75,7 @@ export const Sidebar = ({
             <div className="relative group">
               <button
                 onClick={() => setIsDarkMode(!isDarkMode)}
-                className="p-2 rounded-xl bg-base-content/5 border border-base-content/10 hover:border-primary/30 hover:bg-base-content/10 transition-all active:scale-95 outline-none flex items-center justify-center transform-gpu"
+                className="p-2 rounded-xl bg-base-content/5 border border-base-content/10 hover:border-primary/30 hover:bg-base-content/10 active:scale-95 outline-none flex items-center justify-center"
               >
                 {isDarkMode ? (
                   <Moon size={16} className="text-primary fill-primary/20" />
@@ -108,7 +91,7 @@ export const Sidebar = ({
             <div className="relative group">
               <button
                 onClick={() => s.setIsSalvage(!s.isSalvage)}
-                className={`p-2 rounded-xl border transition-all active:scale-95 outline-none flex items-center justify-center transform-gpu ${s.isSalvage ? "bg-secondary/20 border-secondary/50 text-secondary shadow-[0_0_10px_rgba(var(--s),0.2)]" : "bg-base-content/5 border-base-content/10 text-base-content/40 hover:text-base-content/80 hover:bg-base-content/10"}`}
+                className={`p-2 rounded-xl border active:scale-95 outline-none flex items-center justify-center ${s.isSalvage ? "bg-secondary/20 border-secondary/50 text-secondary shadow-sm" : "bg-base-content/5 border-base-content/10 text-base-content/40 hover:text-base-content/80 hover:bg-base-content/10"}`}
               >
                 {s.isSalvage ? (
                   <Anvil size={16} className="fill-secondary/20" />
@@ -124,24 +107,21 @@ export const Sidebar = ({
           </div>
         </div>
 
-        <div className="relative flex bg-base-content/3 rounded-xl p-1 border border-base-content/5 select-none overflow-hidden shadow-inner">
-          <div className="absolute inset-1 flex pointer-events-none">
-            <motion.div
-              layout
-              className="h-full bg-primary rounded-lg shadow-md"
-              initial={false}
-              animate={{
-                x: `${TAB_LIST.indexOf(activeTab) * 100}%`,
-                width: "33.33%",
-              }}
-              transition={{ type: "spring", stiffness: 400, damping: 30 }}
-            />
-          </div>
+        {/* Tab Header Tanpa Framer Motion */}
+        <div className="relative flex bg-base-content/5 rounded-xl p-1 border border-base-content/5 select-none shadow-inner">
+          {/* Background Slider pake CSS biasa */}
+          <div
+            className="absolute top-1 bottom-1 w-[calc(33.33%-4px)] bg-primary rounded-lg shadow-sm transition-all duration-200 ease-out"
+            style={{
+              transform: `translateX(${TAB_LIST.indexOf(activeTab) * 100}%)`,
+              left: "4px",
+            }}
+          />
           {TAB_LIST.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`relative z-10 flex-1 text-[10px] font-black uppercase py-2.5 transition-colors duration-300 outline-none select-none rounded-lg ${activeTab === tab ? "text-primary-content drop-shadow-sm" : "text-base-content opacity-40 hover:opacity-100 hover:bg-base-content/5"}`}
+              className={`relative z-10 flex-1 text-[10px] font-black uppercase py-2.5 outline-none select-none rounded-lg ${activeTab === tab ? "text-primary-content drop-shadow-sm" : "text-base-content opacity-50 hover:opacity-100 hover:bg-base-content/5"}`}
             >
               {tab}
             </button>
@@ -151,73 +131,64 @@ export const Sidebar = ({
 
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto overflow-x-hidden px-6 pb-5 pt-2 custom-scrollbar relative">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              variants={tabVariants}
-              initial="hidden"
-              animate="enter"
-              exit="exit"
-              className="h-full transform-gpu origin-top"
-            >
-              {activeTab === "Batch" && (
-                <BatchTabContent
-                  openSearchModal={openSearchModal}
-                  imageDirPath={imageDirPath}
-                />
-              )}
+          {/* Tab Content Tanpa Animasi Transisi */}
+          <div className="h-full">
+            {activeTab === "Batch" && (
+              <BatchTabContent
+                openSearchModal={openSearchModal}
+                imageDirPath={imageDirPath}
+              />
+            )}
 
-              {activeTab === "Strategy" && <StrategyTabContent rrr={rrr} />}
+            {activeTab === "Strategy" && <StrategyTabContent rrr={rrr} />}
 
-              {activeTab === "Recipe" && (
-                <div className="space-y-4 text-base-content">
-                  <div>
-                    <h3 className="text-[10px] font-black text-primary uppercase mb-3 select-none flex items-center gap-2 tracking-widest opacity-80">
-                      <ClipboardList size={12} strokeWidth={2.5} /> Material
-                      List ({s.materials?.length || 0})
-                    </h3>
+            {activeTab === "Recipe" && (
+              <div className="space-y-4 text-base-content">
+                <div>
+                  <h3 className="text-[10px] font-black text-primary uppercase mb-3 select-none flex items-center gap-2 tracking-widest opacity-80">
+                    <ClipboardList size={12} strokeWidth={2.5} /> Material List
+                    ({s.materials?.length || 0})
+                  </h3>
 
-                    <div className="space-y-1">
-                      {s.materials && s.materials.length > 0 ? (
-                        s.materials.map((mat: any) => (
-                          <MaterialCard
-                            key={mat.id}
-                            mat={mat}
-                            onOpenCalc={() => openCalcModal?.(mat.id)}
-                            imageDirPath={imageDirPath}
-                          />
-                        ))
-                      ) : (
-                        <div className="py-10 flex flex-col items-center justify-center border-2 border-dashed border-base-content/10 rounded-2xl opacity-30 select-none bg-base-content/5">
-                          <Package size={28} className="mb-3 opacity-50" />
-                          <p className="text-[10px] font-black uppercase tracking-widest">
-                            No Materials Yet
-                          </p>
-                        </div>
-                      )}
-                    </div>
+                  <div className="space-y-1">
+                    {s.materials && s.materials.length > 0 ? (
+                      s.materials.map((mat: any) => (
+                        <MaterialCard
+                          key={mat.id}
+                          mat={mat}
+                          onOpenCalc={() => openCalcModal?.(mat.id)}
+                          imageDirPath={imageDirPath}
+                        />
+                      ))
+                    ) : (
+                      <div className="py-10 flex flex-col items-center justify-center border-2 border-dashed border-base-content/10 rounded-2xl opacity-40 select-none bg-base-content/5">
+                        <Package size={28} className="mb-3 opacity-50" />
+                        <p className="text-[10px] font-black uppercase tracking-widest">
+                          No Materials Yet
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="p-6 border-t border-base-content/5 bg-base-200/50 backdrop-blur-md">
+      <div className="p-6 border-t border-base-content/5 bg-base-200">
         <div className="flex gap-3">
           <div className="relative group flex-1">
             <button
               onClick={onSync}
               disabled={isLoading}
-              className="relative w-full bg-base-content/5 border border-base-content/10 text-[10px] font-black uppercase py-3.5 rounded-xl hover:bg-base-content/10 transition-all outline-none active:scale-95 flex items-center justify-center gap-2 transform-gpu overflow-hidden"
+              className="relative w-full bg-base-content/5 border border-base-content/10 text-[10px] font-black uppercase py-3.5 rounded-xl hover:bg-base-content/10 outline-none active:scale-95 flex items-center justify-center gap-2 overflow-hidden"
             >
+              {/* Loading Bar dengan CSS Width Biasa */}
               {isLoading && (
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${syncProgress}%` }}
-                  transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                  className="absolute left-0 top-0 h-full bg-primary/20 z-0"
+                <div
+                  className="absolute left-0 top-0 h-full bg-primary/20 z-0 transition-all duration-200"
+                  style={{ width: `${syncProgress}%` }}
                 />
               )}
               <div className="relative z-10 flex items-center gap-2">
@@ -240,7 +211,7 @@ export const Sidebar = ({
                 e.preventDefault();
                 onClear();
               }}
-              className="w-full bg-error/5 border border-error/20 text-error text-[10px] font-black uppercase py-3.5 rounded-xl hover:bg-error/10 hover:border-error/40 transition-all outline-none active:scale-95 flex items-center justify-center gap-2 transform-gpu"
+              className="w-full bg-error/5 border border-error/20 text-error text-[10px] font-black uppercase py-3.5 rounded-xl hover:bg-error/10 hover:border-error/40 outline-none active:scale-95 flex items-center justify-center gap-2"
             >
               <Trash2 size={12} /> Clear
             </button>
