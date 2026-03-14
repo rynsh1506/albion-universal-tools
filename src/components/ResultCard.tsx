@@ -39,6 +39,16 @@ export default function ResultCard({ data }: any) {
     totalProduced > 0 ? Math.ceil(netProdCost / totalProduced) : 0;
   const recommendedPrice = Math.ceil(breakEvenPrice * 1.15);
 
+  // --- PERBAIKAN: Kalkulasi dinamis untuk Cost / Item dan Profit / Item ---
+  const costPerItem =
+    data.costPerItem ||
+    (totalProduced > 0 ? Math.ceil(netProdCost / totalProduced) : 0);
+  const profitPerItem =
+    data.profitPerItem ||
+    (totalProduced > 0
+      ? Math.floor((data.realProfit || 0) / totalProduced)
+      : 0);
+
   const handleCopyReport = () => {
     if (isDefaultStyle) return;
     const reportText =
@@ -227,14 +237,16 @@ export default function ResultCard({ data }: any) {
             tip: "Total profit percentage after all fees",
           },
           {
+            // --- PERBAIKAN: Menggunakan variabel profitPerItem yang sudah dikalkulasi ---
             label: "Profit / Item",
-            val: `${(data.profit_per_item || 0).toLocaleString()} S`,
+            val: `${profitPerItem.toLocaleString()} S`,
             color: isProfit ? "text-success" : "text-error",
             tip: "Net profit earned per single output item",
           },
           {
+            // --- PERBAIKAN: Menggunakan variabel costPerItem yang sudah dikalkulasi ---
             label: "Cost / Item",
-            val: `${(data.cost_per_item || 0).toLocaleString()} S`,
+            val: `${costPerItem.toLocaleString()} S`,
             color: "text-warning",
             tip: "Production cost to make one output item",
           },
