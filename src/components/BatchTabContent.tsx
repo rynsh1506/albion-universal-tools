@@ -73,7 +73,7 @@ export const BatchTabContent = ({
   const targetId = (s as any).targetItemId || s.targetItem;
   const getImgUrl = (itemId: string) =>
     imageDirPath && itemId
-      ? convertFileSrc(`${imageDirPath}/${itemId}.png`)
+      ? convertFileSrc(`${imageDirPath}/${itemId}.webp`)
       : "";
 
   const STATUS_LIST = ["Direct", "Order"];
@@ -119,12 +119,12 @@ export const BatchTabContent = ({
                 : "bg-base-content/2 border-base-content/5 border-dashed opacity-40"
             }`}
           >
-            <div className="w-10 h-10 rounded-lg bg-base-content/5 border border-base-content/5 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+            <div className="w-10 h-10 rounded-lg bg-base-content/5 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
               {isTargetSelected && !imageError ? (
                 <img
                   src={getImgUrl(targetId)}
                   alt={s.targetItem}
-                  className="w-[120%] h-[120%] object-contain scale-[1.3]"
+                  className="w-full h-full object-contain "
                   onError={() => setImageError(true)}
                 />
               ) : (
