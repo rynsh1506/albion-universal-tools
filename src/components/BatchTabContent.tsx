@@ -233,7 +233,6 @@ export const BatchTabContent = ({
           <ShoppingCart size={12} strokeWidth={2.5} /> Market Status
         </h3>
         <div className="relative group/info">
-          {/* Market Status Slider Tanpa Framer Motion */}
           <div className="relative flex bg-base-content/5 rounded-xl p-1.5 border border-base-content/10 select-none shadow-inner">
             <div
               className="absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-primary rounded-lg shadow-sm transition-transform duration-200 ease-out"

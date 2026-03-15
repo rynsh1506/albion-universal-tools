@@ -107,9 +107,7 @@ export const Sidebar = ({
           </div>
         </div>
 
-        {/* Tab Header Tanpa Framer Motion */}
         <div className="relative flex bg-base-content/5 rounded-xl p-1 border border-base-content/5 select-none shadow-inner">
-          {/* Background Slider pake CSS biasa */}
           <div
             className="absolute top-1 bottom-1 w-[calc(33.33%-4px)] bg-primary rounded-lg shadow-sm transition-all duration-200 ease-out"
             style={{
@@ -131,7 +129,6 @@ export const Sidebar = ({
 
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto overflow-x-hidden px-6 pb-5 pt-2 custom-scrollbar relative">
-          {/* Tab Content Tanpa Animasi Transisi */}
           <div className="h-full">
             {activeTab === "Batch" && (
               <BatchTabContent
@@ -184,7 +181,6 @@ export const Sidebar = ({
               disabled={isLoading}
               className="relative w-full bg-base-content/5 border border-base-content/10 text-[10px] font-black uppercase py-3.5 rounded-xl hover:bg-base-content/10 outline-none active:scale-95 flex items-center justify-center gap-2 overflow-hidden"
             >
-              {/* Loading Bar dengan CSS Width Biasa */}
               {isLoading && (
                 <div
                   className="absolute left-0 top-0 h-full bg-primary/20 z-0 transition-all duration-200"

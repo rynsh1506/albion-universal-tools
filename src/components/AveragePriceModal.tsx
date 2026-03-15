@@ -6,7 +6,7 @@ import {
   Calculator,
   Check,
   Package,
-  Target,
+  ShoppingCart,
 } from "lucide-react";
 import { useCraftingStore } from "../store/useCraftingStore";
 import { blockInvalidCharInt, cleanIntString } from "../utils/inputHelpers";
@@ -14,13 +14,20 @@ import { blockInvalidCharInt, cleanIntString } from "../utils/inputHelpers";
 export default function AveragePriceModal({
   matId,
   onClose,
+  data,
 }: {
   matId: string;
   onClose: () => void;
+  data: any;
 }) {
   const { materials, updateMaterial } = useCraftingStore();
   const material = materials?.find((m) => m.id === matId);
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const calculatedMat = data?.buyList?.find(
+    (m: any) => m.id === matId || m.name === material?.name,
+  );
+  const toBuy = calculatedMat ? Number(calculatedMat.qtyToBuy) : 0;
 
   const [rows, setRows] = useState([
     { id: Date.now().toString(), qty: "", price: "" },
@@ -81,10 +88,8 @@ export default function AveragePriceModal({
 
   return (
     <div className="fixed inset-0 z-9999 flex items-center justify-center p-4 isolate">
-      {/* Backdrop Tanpa Blur */}
       <div className="absolute inset-0 bg-base-300/95" onClick={onClose} />
 
-      {/* Modal Container */}
       <div
         ref={modalRef}
         className="relative w-full max-w-md bg-base-200 border border-base-content/10 rounded-4xl shadow-xl flex flex-col max-h-[85vh] overflow-hidden isolate"
@@ -112,9 +117,8 @@ export default function AveragePriceModal({
           </button>
         </div>
 
-        {/* BODY - SCROLLABLE LIST */}
+        {/* BODY */}
         <div className="p-7 overflow-y-auto custom-scrollbar space-y-4 flex-1 relative z-10 bg-base-100">
-          {/* Header Row (Labels) */}
           <div className="flex px-1 gap-3">
             <div className="flex-1 text-[9px] font-black opacity-40 uppercase tracking-widest pl-2">
               Quantity
@@ -169,16 +173,14 @@ export default function AveragePriceModal({
           </button>
         </div>
 
-        {/* FOOTER */}
         <div className="p-7 bg-base-200 border-t border-base-content/5 shrink-0 relative z-10">
           <div className="flex justify-between items-center mb-5 px-1">
-            {/* FITUR BARU: Menampilkan Target Quantity */}
             <div className="w-1/3">
               <p className="text-[9px] font-black uppercase opacity-40 mb-1 tracking-widest flex items-center gap-1">
-                <Target size={10} /> Target
+                <ShoppingCart size={10} /> TO BUY
               </p>
-              <p className="text-sm font-black text-warning">
-                {material.qty.toLocaleString("en-US")}
+              <p className="text-sm font-black text-error">
+                {toBuy.toLocaleString()}
               </p>
             </div>
 
@@ -186,12 +188,12 @@ export default function AveragePriceModal({
 
             <div className="w-1/3 text-center">
               <p className="text-[9px] font-black uppercase opacity-40 mb-1 tracking-widest">
-                Input Qty
+                PURCHASED
               </p>
               <p
-                className={`text-sm font-black ${totalQty >= material.qty ? "text-success" : "text-base-content"}`}
+                className={`text-sm font-black ${totalQty >= toBuy ? "text-success" : "text-base-content"}`}
               >
-                {totalQty.toLocaleString("en-US")}
+                {totalQty.toLocaleString()}
               </p>
             </div>
 
@@ -199,21 +201,21 @@ export default function AveragePriceModal({
 
             <div className="w-1/3 text-right">
               <p className="text-[9px] font-black uppercase opacity-40 mb-1 tracking-widest">
-                Total Cost
+                TOTAL COST
               </p>
               <p className="text-sm font-black text-error truncate">
-                {totalCost.toLocaleString("en-US")}
+                {totalCost.toLocaleString()}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex-1 bg-info/10 border border-info/20 rounded-2xl p-4 flex flex-col justify-center shadow-inner relative overflow-hidden group/avg">
+            <div className="flex-1 bg-info/10 border border-info/20 rounded-2xl p-4 flex flex-col justify-center shadow-inner relative overflow-hidden">
               <span className="text-[9px] font-black uppercase text-info opacity-70 tracking-widest mb-1">
                 Average Price
               </span>
               <span className="text-xl font-black text-info leading-none tracking-tight">
-                {avgPrice.toLocaleString("en-US")}{" "}
+                {avgPrice.toLocaleString()}{" "}
                 <span className="text-[10px] opacity-50 ml-1">/ unit</span>
               </span>
             </div>
