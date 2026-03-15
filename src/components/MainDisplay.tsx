@@ -26,7 +26,6 @@ export default function MainDisplay({ result }: any) {
   return (
     <main className="flex-1 bg-base-300 flex flex-col relative h-full overflow-hidden isolate">
       <div className="flex justify-center pt-6 pb-2 shrink-0 z-30 relative">
-        {/* Menu Tab Tanpa Backdrop Blur & Tanpa Animasi Framer */}
         <div className="relative flex bg-base-200 rounded-full p-1 border border-base-content/10 w-72 shadow-sm">
           {["crafting", "salvage", "market"].map((view) => (
             <button
@@ -45,7 +44,6 @@ export default function MainDisplay({ result }: any) {
       </div>
 
       <div className="flex-1 overflow-y-auto custom-scrollbar px-8 pt-4 pb-10">
-        {/* Konten Dirender Instan Tanpa AnimatePresence */}
         {activeView === "crafting" ? (
           <ResultCard data={displayData} />
         ) : (

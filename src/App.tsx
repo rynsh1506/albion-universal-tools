@@ -145,7 +145,6 @@ export default function App() {
       data-theme={isDarkMode ? "dark" : "light"}
       className="h-screen w-screen flex overflow-hidden font-sans bg-base-300 text-base-content isolate relative"
     >
-      {/* Notifikasi Instan Tanpa Framer Motion & Tanpa Efek Kaca */}
       {notification && (
         <div className="fixed top-6 left-0 w-full flex justify-center z-9999 pointer-events-none">
           <div
@@ -167,11 +166,11 @@ export default function App() {
         </div>
       )}
 
-      {/* Modal Instan Tanpa AnimatePresence */}
       {calcModalMatId && (
         <AveragePriceModal
           matId={calcModalMatId}
           onClose={() => setCalcModalMatId(null)}
+          data={activeResult}
         />
       )}
 

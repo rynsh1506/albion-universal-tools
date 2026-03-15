@@ -248,15 +248,12 @@ export const SearchModal = ({ isOpen, onClose, imageDirPath }: any) => {
 
   return (
     <div className="fixed inset-0 z-9999 flex items-center justify-center p-6 isolate">
-      {/* Backdrop Tanpa Blur */}
       <div className="absolute inset-0 bg-base-300/95" onClick={onClose} />
 
-      {/* Modal Container Tanpa Animasi Masuk/Keluar yang Membebani */}
       <div
         className="relative bg-base-200 w-full max-w-4xl h-[80vh] rounded-4xl border border-base-content/10 shadow-2xl overflow-hidden flex flex-col z-10"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="p-8 pb-4 flex items-center gap-6">
           {isSearching ? (
             <Loader2 size={32} className="text-primary animate-spin" />
@@ -279,7 +276,6 @@ export const SearchModal = ({ isOpen, onClose, imageDirPath }: any) => {
           </button>
         </div>
 
-        {/* Filters */}
         <div className="px-8 py-6 flex items-center justify-between relative z-20">
           <div className="flex items-center gap-4">
             <div className="bg-primary/10 p-3 rounded-2xl text-primary">
@@ -314,7 +310,6 @@ export const SearchModal = ({ isOpen, onClose, imageDirPath }: any) => {
           </button>
         </div>
 
-        {/* Results Container */}
         <div className="flex-1 flex flex-col bg-base-content/5 mx-8 mb-4 rounded-3xl overflow-hidden border border-base-content/5">
           <div className="px-8 py-4 border-b border-base-content/5 bg-base-200/50 flex justify-between items-center shrink-0">
             <p className="text-[10px] font-black text-base-content/40 uppercase tracking-[0.2em]">
@@ -392,7 +387,6 @@ export const SearchModal = ({ isOpen, onClose, imageDirPath }: any) => {
             </div>
           </div>
 
-          {/* Pagination Bar */}
           {totalPages > 1 && (
             <div className="px-8 py-3 border-t border-base-content/5 flex items-center justify-between bg-base-200/30 shrink-0">
               <button
@@ -418,7 +412,6 @@ export const SearchModal = ({ isOpen, onClose, imageDirPath }: any) => {
           )}
         </div>
 
-        {/* Keyboard Help */}
         <div className="px-10 py-5 border-t border-base-content/5 flex justify-between items-center text-[10px] font-black uppercase opacity-20 select-none shrink-0">
           <div className="flex gap-8">
             <span>
