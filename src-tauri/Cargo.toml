@@ -1,6 +1,6 @@
 [package]
 name = "avalonian-tools"
-version = "1.0.0"
+version = "1.1.1"
 description = "A Tauri App"
 authors = ["Muhammad Riyansyah <mriyansyah112@gmail.com>"]
 edition = "2021"
@@ -27,3 +27,4 @@ dirs = "5.0"
 reqwest = { version = "0.12", features = ["json", "stream"] }
 tokio = { version = "1", features = ["full"] }
 futures = "0.3.32"
+image = { version = "0.24", features = ["webp"] }

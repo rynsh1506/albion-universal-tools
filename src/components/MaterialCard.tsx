@@ -30,7 +30,7 @@ export default function MaterialCard({
 
   const getImgUrl = (itemId: string) =>
     imageDirPath && itemId
-      ? convertFileSrc(`${imageDirPath}/${itemId}.png`)
+      ? convertFileSrc(`${imageDirPath}/${itemId}.webp`)
       : "";
 
   const localImageUrl = getImgUrl(mat.id);
@@ -68,7 +68,7 @@ export default function MaterialCard({
   return (
     <div className="bg-base-content/5 border border-base-content/10 rounded-2xl p-5 mb-4 hover:border-primary/30 hover:bg-base-content/10 transition-colors duration-100 shadow-sm group relative isolate overflow-visible">
       <div className="flex items-center gap-3 mb-5 group/name relative">
-        <div className="bg-base-content/5 w-10 h-10 rounded-xl flex items-center justify-center border border-base-content/10 shadow-inner group-hover:bg-primary/10 group-hover:border-primary/30 transition-colors duration-100 overflow-hidden shrink-0">
+        <div className="bg-base-content/5 w-10 h-10 rounded-xl flex items-center justify-center shadow-inner group-hover:bg-primary/10 group-hover:border-primary/30 transition-colors duration-100 overflow-hidden shrink-0">
           {imageError || !localImageUrl ? (
             <Package
               size={18}
@@ -78,7 +78,7 @@ export default function MaterialCard({
             <img
               src={localImageUrl}
               alt={mat.name}
-              className="w-[120%] h-[120%] object-contain scale-[1.3]"
+              className="w-full h-full object-contain"
               onError={() => setImageError(true)}
             />
           )}

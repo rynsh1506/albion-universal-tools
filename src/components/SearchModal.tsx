@@ -139,7 +139,7 @@ export const SearchModal = ({ isOpen, onClose, imageDirPath }: any) => {
   const getImgUrl = (itemId: string) => {
     if (!imageDirPath || !itemId) return "";
     const cleanItemId = itemId.replace(/^[\\/]+/, "");
-    return convertFileSrc(`${imageDirPath}/${cleanItemId}.png`);
+    return convertFileSrc(`${imageDirPath}/${cleanItemId}.webp`);
   };
 
   useEffect(() => {

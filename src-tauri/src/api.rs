@@ -1,11 +1,12 @@
 use crate::db::{save_items_to_db, DbItem, RecipeMaterial};
 use futures::stream::{self, StreamExt};
+use image::io::Reader as ImageReader;
 use serde_json::Value;
 use std::collections::HashMap;
+use std::io::Cursor;
 use std::path::PathBuf;
 use tauri::{AppHandle, Emitter, Manager, Window};
 use tokio::fs;
-use tokio::io::AsyncWriteExt;
 
 fn clean_albion_name(text: &str) -> String {
     let prefixes = [
@@ -294,7 +295,11 @@ pub async fn download_and_build_db(window: Window, handle: AppHandle) -> Result<
                                 format!("{} [{}.{}]", r_raw_name_clean, r_tier, r_ench);
 
                             let mat_img_id = if r_ench != "0" {
-                                format!("{}@{}", r_base, r_ench)
+                                if r_uid.contains("_LEVEL") {
+                                    format!("{}_LEVEL{}", r_base, r_ench)
+                                } else {
+                                    format!("{}@{}", r_base, r_ench)
+                                }
                             } else {
                                 r_base.to_string()
                             };
@@ -400,7 +405,7 @@ pub async fn download_and_build_db(window: Window, handle: AppHandle) -> Result<
     let mut fetches = stream::iter(unique_ids)
         .map(|id| {
             let client = &client;
-            let path = img_dir.join(format!("{}.png", id));
+            let path = img_dir.join(format!("{}.webp", id));
             async move {
                 if path.exists() {
                     return Ok(());
@@ -409,8 +414,16 @@ pub async fn download_and_build_db(window: Window, handle: AppHandle) -> Result<
                 let resp = client.get(url).send().await?;
                 if resp.status().is_success() {
                     let bytes = resp.bytes().await?;
-                    let mut file = fs::File::create(path).await?;
-                    file.write_all(&bytes).await?;
+                    let img = ImageReader::new(Cursor::new(bytes))
+                        .with_guessed_format()?
+                        .decode()?;
+
+                    let resized = img.resize(100, 100, image::imageops::FilterType::Triangle);
+
+                    let mut file = std::fs::File::create(&path).map_err(|e| e.to_string())?;
+                    resized
+                        .write_to(&mut file, image::ImageFormat::WebP)
+                        .map_err(|e| e.to_string())?;
                 }
                 Ok::<(), Box<dyn std::error::Error + Send + Sync>>(())
             }
