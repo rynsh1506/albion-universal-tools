@@ -14,10 +14,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: "windows-latest"
-            build: "desktop"
-          - platform: "ubuntu-22.04"
-            build: "desktop"
+          # - platform: "windows-latest"
+          #   build: "desktop"
+          # - platform: "ubuntu-22.04"
+          #   build: "desktop"
           - platform: "ubuntu-22.04"
             build: "android"
 
@@ -98,12 +98,12 @@ jobs:
 
       - name: Build Android APK
         if: matrix.build == 'android'
-        run: npx tauri android build --apk
-        env:
-          TAURI_ANDROID_KEYSTORE: ${{ github.workspace }}/avalonian.jks
-          TAURI_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          TAURI_ANDROID_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          TAURI_ANDROID_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          export TAURI_ANDROID_KEYSTORE="${{ github.workspace }}/avalonian.jks"
+          export TAURI_ANDROID_KEYSTORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
+          export TAURI_ANDROID_KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
+          export TAURI_ANDROID_KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
+          npx tauri android build --apk
 
       - name: Get Version from package.json
         id: app_version
