@@ -79,7 +79,7 @@ export const BatchTabContent = ({
   const STATUS_LIST = ["Direct", "Order"];
 
   return (
-    <div className="space-y-8 text-base-content isolate pt-2">
+    <div className="space-y-8 text-base-content isolate">
       <div className="space-y-4">
         <h3 className="text-[10px] font-black text-primary uppercase flex items-center gap-2 tracking-[0.2em] opacity-80">
           <Target size={12} strokeWidth={2.5} /> Production Target
@@ -124,7 +124,7 @@ export const BatchTabContent = ({
                 <img
                   src={getImgUrl(targetId)}
                   alt={s.targetItem}
-                  className="w-full h-full object-contain "
+                  className="w-full h-full object-contain"
                   onError={() => setImageError(true)}
                 />
               ) : (
@@ -142,16 +142,16 @@ export const BatchTabContent = ({
                 {isTargetSelected ? "Selected Target" : "Waiting Selection"}
               </span>
               <h4
-                className={`text-sm font-black uppercase tracking-wider truncate w-full block ${isTargetSelected ? "text-base-content" : "text-base-content/20"}`}
+                className={`text-sm font-black uppercase tracking-wider leading-tight wrap-break-word pr-2 ${isTargetSelected ? "text-base-content" : "text-base-content/20"}`}
               >
                 {isTargetSelected ? s.targetItem : "---"}
               </h4>
             </div>
 
             {isTargetSelected && (
-              <div className="absolute bottom-[calc(100%+10px)] left-1/2 -translate-x-1/2 bg-base-content text-base-100 px-3 py-1.5 rounded-lg text-[10px] font-black tracking-widest shadow-xl opacity-0 invisible pointer-events-none group-hover/targetCard:opacity-100 group-hover/targetCard:visible transition-opacity duration-100 z-100 border border-base-content/10 whitespace-nowrap flex flex-col items-center">
+              <div className="absolute bottom-[calc(100%+10px)] left-1/2 -translate-x-1/2 bg-base-200 text-base-content px-3 py-1.5 rounded-lg text-[10px] font-black tracking-widest shadow-xl opacity-0 invisible pointer-events-none group-hover/targetCard:opacity-100 group-hover/targetCard:visible transition-opacity duration-100 z-100 border border-base-content/10 whitespace-nowrap flex flex-col items-center lg:flex">
                 <span>{s.targetItem}</span>
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-base-content rotate-45"></div>
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-base-200 rotate-45 border-b border-r border-base-content/10"></div>
               </div>
             )}
           </div>

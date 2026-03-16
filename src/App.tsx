@@ -31,6 +31,54 @@ export default function App() {
 
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const touchStart = useRef<number | null>(null);
+
+  const backStateRef = useRef({
+    isSearchOpen: false,
+    calcModalMatId: null as string | null,
+    lastBackPress: 0,
+  });
+
+  useEffect(() => {
+    backStateRef.current.isSearchOpen = isSearchOpen;
+    backStateRef.current.calcModalMatId = calcModalMatId;
+  }, [isSearchOpen, calcModalMatId]);
+
+  useEffect(() => {
+    window.history.pushState(null, "", window.location.href);
+
+    const handleHardwareBack = () => {
+      window.history.pushState(null, "", window.location.href);
+
+      const state = backStateRef.current;
+      const drawer = document.getElementById("main-drawer") as HTMLInputElement;
+
+      if (
+        state.isSearchOpen ||
+        state.calcModalMatId !== null ||
+        drawer?.checked
+      ) {
+        setIsSearchOpen(false);
+        setCalcModalMatId(null);
+        if (drawer) drawer.checked = false;
+        return;
+      }
+
+      const currentTime = new Date().getTime();
+      if (currentTime - state.lastBackPress < 2000) {
+        getCurrentWindow().close();
+      } else {
+        state.lastBackPress = currentTime;
+        showNotif("Press back again to exit", "success");
+      }
+    };
+
+    window.addEventListener("popstate", handleHardwareBack);
+    return () => {
+      window.removeEventListener("popstate", handleHardwareBack);
+    };
+  }, []);
+
   const showNotif = (msg: string, type: "success" | "error" = "success") => {
     setNotification({ msg, type });
     setTimeout(() => setNotification(null), 4000);
@@ -140,9 +188,33 @@ export default function App() {
     }
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStart.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStart.current === null) return;
+
+    const touchEnd = e.changedTouches[0].clientX;
+    const distance = touchEnd - touchStart.current;
+    const drawer = document.getElementById("main-drawer") as HTMLInputElement;
+
+    if (distance > 70 && touchStart.current < 50 && !drawer?.checked) {
+      if (drawer) drawer.checked = true;
+    }
+
+    if (distance < -70 && drawer?.checked) {
+      if (drawer) drawer.checked = false;
+    }
+
+    touchStart.current = null;
+  };
+
   return (
     <div
       data-theme={isDarkMode ? "dark" : "light"}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       className="h-screen w-screen flex overflow-hidden font-sans bg-base-300 text-base-content isolate relative"
     >
       {notification && (
@@ -174,25 +246,6 @@ export default function App() {
         />
       )}
 
-      <Sidebar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        isDarkMode={isDarkMode}
-        setIsDarkMode={setIsDarkMode}
-        openSearchModal={() => setIsSearchOpen(true)}
-        onCalculate={executeCalculation}
-        onClear={() => {
-          s.clearCrafting();
-          setActiveResult(null);
-        }}
-        openCalcModal={(matId: string) => setCalcModalMatId(matId)}
-        isLoading={isCalculating || isSyncing}
-        rrr={s.getRRR()}
-        onSync={handleSyncDatabase}
-        syncProgress={syncProgress}
-        imageDirPath={imageDirPath}
-      />
-
       <MainDisplay
         result={activeResult}
         onDelete={() => setActiveResult(null)}
@@ -207,6 +260,75 @@ export default function App() {
           setIsSearchOpen(false);
         }}
       />
+
+      <div className="drawer lg:drawer-open h-full">
+        <input id="main-drawer" type="checkbox" className="drawer-toggle" />
+
+        <div className="drawer-content flex flex-col h-full overflow-hidden">
+          <div
+            style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 1rem)" }}
+            className="lg:hidden flex items-center justify-between p-4 bg-base-200 border-b border-base-content/5 shrink-0 z-20"
+          >
+            <label
+              htmlFor="main-drawer"
+              className="btn btn-ghost btn-square drawer-button"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="inline-block w-6 h-6 stroke-current"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                ></path>
+              </svg>
+            </label>
+            <div className="flex flex-col items-end">
+              <span className="text-[10px] font-black tracking-[0.2em] text-primary leading-none uppercase">
+                Avalonian
+              </span>
+              <span className="text-sm font-black tracking-tighter leading-none">
+                TOOLS
+              </span>
+            </div>
+          </div>
+
+          <MainDisplay
+            result={activeResult}
+            onDelete={() => setActiveResult(null)}
+          />
+        </div>
+
+        <div className="drawer-side z-50">
+          <label
+            htmlFor="main-drawer"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <Sidebar
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            isDarkMode={isDarkMode}
+            setIsDarkMode={setIsDarkMode}
+            openSearchModal={() => setIsSearchOpen(true)}
+            onCalculate={executeCalculation}
+            onClear={() => {
+              s.clearCrafting();
+              setActiveResult(null);
+            }}
+            openCalcModal={(matId: string) => setCalcModalMatId(matId)}
+            isLoading={isSyncing}
+            rrr={s.getRRR()}
+            onSync={handleSyncDatabase}
+            syncProgress={syncProgress}
+            imageDirPath={imageDirPath}
+          />
+        </div>
+      </div>
     </div>
   );
 }

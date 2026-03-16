@@ -43,7 +43,7 @@ export default function MainDisplay({ result }: any) {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar px-8 pt-4 pb-10">
+      <div className="flex-1 overflow-y-auto custom-scrollbar pl-5 md:pl-12 pr-2 md:pr-10 pt-4 md:pt-10 pb-10">
         {activeView === "crafting" ? (
           <ResultCard data={displayData} />
         ) : (

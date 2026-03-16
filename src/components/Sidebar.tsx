@@ -53,11 +53,24 @@ export const Sidebar = ({
 
   const TAB_LIST = ["Batch", "Strategy", "Recipe"];
 
+  const closeDrawer = () => {
+    const drawerCheckbox = document.getElementById(
+      "main-drawer",
+    ) as HTMLInputElement;
+    if (drawerCheckbox) drawerCheckbox.checked = false;
+  };
+
   return (
-    <aside className="w-95 h-full flex flex-col bg-base-200 border-r border-base-content/5 z-20 shrink-0 shadow-[5px_0_30px_rgba(0,0,0,0.1)]">
-      <div className="p-6 pb-4">
+    <aside className="w-[92%] md:w-95 h-full flex flex-col bg-base-200 lg:border-r border-base-content/5 z-20 overflow-hidden shadow-2xl transition-all duration-300">
+      <div className="p-5 pb-4 shrink-0 bg-base-200">
         <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-3 group cursor-default">
+          <div
+            style={{
+              paddingTop: "env(safe-area-inset-top, 0px)",
+            }}
+            className="flex items-center gap-3 group cursor-pointer"
+            onClick={closeDrawer}
+          >
             <div className="bg-primary/10 p-2.5 rounded-xl border border-primary/20 shadow-sm transition-colors group-hover:bg-primary/20">
               <Swords size={24} className="text-primary stroke-[1.5px]" />
             </div>
@@ -128,48 +141,46 @@ export const Sidebar = ({
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <div className="h-full overflow-y-auto overflow-x-hidden px-6 pb-5 pt-2 custom-scrollbar relative">
-          <div className="h-full">
-            {activeTab === "Batch" && (
-              <BatchTabContent
-                openSearchModal={openSearchModal}
-                imageDirPath={imageDirPath}
-              />
-            )}
+        <div className="h-full overflow-y-auto pl-6 pr-4 py-4 custom-scrollbar relative">
+          {activeTab === "Batch" && (
+            <BatchTabContent
+              openSearchModal={openSearchModal}
+              imageDirPath={imageDirPath}
+            />
+          )}
 
-            {activeTab === "Strategy" && <StrategyTabContent rrr={rrr} />}
+          {activeTab === "Strategy" && <StrategyTabContent rrr={rrr} />}
 
-            {activeTab === "Recipe" && (
-              <div className="space-y-4 text-base-content">
-                <div>
-                  <h3 className="text-[10px] font-black text-primary uppercase mb-3 select-none flex items-center gap-2 tracking-widest opacity-80">
-                    <ClipboardList size={12} strokeWidth={2.5} /> Material List
-                    ({s.materials?.length || 0})
-                  </h3>
+          {activeTab === "Recipe" && (
+            <div className="space-y-4 text-base-content">
+              <div>
+                <h3 className="text-[10px] font-black text-primary uppercase mb-3 select-none flex items-center gap-2 tracking-widest opacity-80">
+                  <ClipboardList size={12} strokeWidth={2.5} /> Material List (
+                  {s.materials?.length || 0})
+                </h3>
 
-                  <div className="space-y-1">
-                    {s.materials && s.materials.length > 0 ? (
-                      s.materials.map((mat: any) => (
-                        <MaterialCard
-                          key={mat.id}
-                          mat={mat}
-                          onOpenCalc={() => openCalcModal?.(mat.id)}
-                          imageDirPath={imageDirPath}
-                        />
-                      ))
-                    ) : (
-                      <div className="py-10 flex flex-col items-center justify-center border-2 border-dashed border-base-content/10 rounded-2xl opacity-40 select-none bg-base-content/5">
-                        <Package size={28} className="mb-3 opacity-50" />
-                        <p className="text-[10px] font-black uppercase tracking-widest">
-                          No Materials Yet
-                        </p>
-                      </div>
-                    )}
-                  </div>
+                <div className="space-y-1">
+                  {s.materials && s.materials.length > 0 ? (
+                    s.materials.map((mat: any) => (
+                      <MaterialCard
+                        key={mat.id}
+                        mat={mat}
+                        onOpenCalc={() => openCalcModal?.(mat.id)}
+                        imageDirPath={imageDirPath}
+                      />
+                    ))
+                  ) : (
+                    <div className="py-10 flex flex-col items-center justify-center border-2 border-dashed border-base-content/10 rounded-2xl opacity-40 select-none bg-base-content/5">
+                      <Package size={28} className="mb-3 opacity-50" />
+                      <p className="text-[10px] font-black uppercase tracking-widest">
+                        No Materials Yet
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 

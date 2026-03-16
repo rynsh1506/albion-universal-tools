@@ -1,4 +1,4 @@
-name: "Build & Release Albion Universal Tools 🚀"
+name: "Build & Release Avalonian Tools 🚀"
 
 on:
   push:
@@ -8,14 +8,18 @@ on:
 
 jobs:
   build-tauri:
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
         include:
-          - platform: "ubuntu-22.04"
-            args: ""
           - platform: "windows-latest"
             args: ""
+          - platform: "ubuntu-22.04"
+            args: ""
+          - platform: "ubuntu-22.04"
+            args: "--target android"
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -26,9 +30,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: "npm"
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android, armv7-linux-androideabi, i686-linux-android, x86_64-linux-android
+
+      - name: Setup Java (Android Only)
+        if: contains(matrix.args, 'android')
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+
+      - name: Setup Android SDK (Android Only)
+        if: contains(matrix.args, 'android')
+        uses: android-actions/setup-android@v3
 
       - name: Install Linux dependencies (Ubuntu Only)
         if: matrix.platform == 'ubuntu-22.04'
@@ -45,8 +63,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: v__VERSION__
-          releaseName: "Avalonian Tools Tools v__VERSION__"
-          releaseBody: "🔥 Auto-build release dari GitHub Actions. Tinggal download dan install!"
+          releaseName: "Avalonian Tools v__VERSION__"
+          releaseBody: |
+            ## 🚀 Avalonian Tools Automated Build
+
+            This release was automatically generated via GitHub Actions.
+
+            ### 📱 Supported Platforms:
+            - **Windows**: `.msi` / `.exe`
+            - **Linux**: `.AppImage` / `.deb`
+            - **Android**: `.apk` (Universal Architecture)
+
+            *Just download and install the version compatible with your device!*
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
