@@ -14,10 +14,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # - platform: "windows-latest"
-          #   build: "desktop"
-          # - platform: "ubuntu-22.04"
-          #   build: "desktop"
+          - platform: "windows-latest"
+            build: "desktop"
+          - platform: "ubuntu-22.04"
+            build: "desktop"
           - platform: "ubuntu-22.04"
             build: "android"
 
@@ -91,11 +91,6 @@ jobs:
       # ==========================================
       # 📱 ANDROID BUILD (APK)
       # ==========================================
-      - name: Decode Keystore
-        if: matrix.build == 'android'
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/avalonian.jks
-
       - name: Build Android APK
         if: matrix.build == 'android'
         env:
