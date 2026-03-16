@@ -94,7 +94,6 @@ jobs:
       - name: Decode Keystore
         if: matrix.build == 'android'
         run: |
-          # Ini proses ngerubah teks rahasia jadi file fisik .jks lagi
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/avalonian.jks
 
       - name: Build Android APK
