@@ -43,7 +43,7 @@ export const StrategyTabContent = ({ rrr }: { rrr: number }) => {
   };
 
   return (
-    <div className="space-y-6 text-base-content isolate pt-2">
+    <div className="space-y-6 text-base-content isolate">
       <div>
         <h3 className="text-[10px] font-black text-primary uppercase flex items-center gap-2 tracking-[0.2em] opacity-80 select-none mb-4">
           <Percent size={12} strokeWidth={2.5} /> RRR Modifiers

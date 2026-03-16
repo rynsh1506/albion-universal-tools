@@ -24,6 +24,8 @@ export default function AveragePriceModal({
   const material = materials?.find((m) => m.id === matId);
   const modalRef = useRef<HTMLDivElement>(null);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   const calculatedMat = data?.buyList?.find(
     (m: any) => m.id === matId || m.name === material?.name,
   );
@@ -46,6 +48,14 @@ export default function AveragePriceModal({
 
   const addRow = () => {
     setRows([...rows, { id: Date.now().toString(), qty: "", price: "" }]);
+    setTimeout(() => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          top: scrollRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    }, 100);
   };
 
   const removeRow = (id: string) => {
@@ -87,134 +97,156 @@ export default function AveragePriceModal({
   if (!material) return null;
 
   return (
-    <div className="fixed inset-0 z-9999 flex items-center justify-center p-4 isolate">
-      <div className="absolute inset-0 bg-base-300/95" onClick={onClose} />
+    <div className="fixed inset-0 z-9999 flex items-center justify-center p-0 md:p-4 isolate">
+      <div
+        className="absolute inset-0 bg-base-300/98 md:bg-base-300/95"
+        onClick={onClose}
+      />
 
       <div
         ref={modalRef}
-        className="relative w-full max-w-md bg-base-200 border border-base-content/10 rounded-4xl shadow-xl flex flex-col max-h-[85vh] overflow-hidden isolate"
+        className="relative w-full h-full md:h-auto md:max-w-md bg-base-200 md:border border-base-content/10 rounded-none md:rounded-4xl shadow-2xl flex flex-col max-h-full md:max-h-[85vh] overflow-hidden isolate"
+        style={{
+          paddingTop: "env(safe-area-inset-top, 0px)",
+          paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        }}
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* HEADER */}
-        <div className="px-7 py-6 border-b border-base-content/5 flex justify-between items-start shrink-0 relative z-10 bg-base-200">
-          <div className="flex gap-4">
-            <div className="bg-primary/10 p-3 rounded-2xl border border-primary/20 text-primary shadow-inner">
-              <Calculator size={20} strokeWidth={2.5} />
+        <div className="px-5 py-4 md:px-7 md:py-6 border-b border-base-content/5 flex justify-between items-center shrink-0 bg-base-200 z-20">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary/10 p-2 md:p-3 rounded-xl border border-primary/20 text-primary shadow-inner shrink-0">
+              <Calculator className="size={18} md:size={20} strokeWidth={2.5}" />
             </div>
-            <div className="pt-1">
-              <h2 className="text-sm font-black uppercase tracking-[0.2em] text-base-content leading-none">
+            <div className="min-w-0">
+              <h2 className="text-xs md:text-sm font-black uppercase tracking-widest text-base-content leading-none">
                 Avg Price Calc
               </h2>
-              <div className="text-[11px] font-bold opacity-60 mt-2 flex items-center gap-1.5 text-primary">
-                <Package size={12} /> {material.name}
+              <div className="text-[9px] md:text-[11px] font-bold opacity-60 mt-1.5 flex items-center gap-1.5 text-primary truncate">
+                <Package size={10} className="shrink-0" />{" "}
+                <span className="truncate">{material.name}</span>
               </div>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="btn btn-ghost btn-sm btn-square text-base-content/40 hover:text-error hover:bg-error/10 transition-colors rounded-xl"
+            className="btn btn-ghost btn-sm btn-square text-base-content/40 hover:text-error transition-colors rounded-xl"
           >
             <X size={20} />
           </button>
         </div>
 
-        {/* BODY */}
-        <div className="p-7 overflow-y-auto custom-scrollbar space-y-4 flex-1 relative z-10 bg-base-100">
+        <div
+          ref={scrollRef}
+          className="p-5 md:p-7 overflow-y-auto custom-scrollbar space-y-3 md:space-y-4 flex-1 bg-base-100/50"
+          onTouchStart={() => {
+            if (document.activeElement instanceof HTMLElement) {
+              document.activeElement.blur();
+            }
+          }}
+        >
           <div className="flex px-1 gap-3">
-            <div className="flex-1 text-[9px] font-black opacity-40 uppercase tracking-widest pl-2">
+            <div className="flex-1 text-[8px] md:text-[9px] font-black opacity-40 uppercase tracking-widest pl-2">
               Quantity
             </div>
-            <div className="flex-1 text-[9px] font-black opacity-40 uppercase tracking-widest pl-2 text-warning">
-              Unit Price (Silver)
+            <div className="flex-1 text-[8px] md:text-[9px] font-black opacity-40 uppercase tracking-widest pl-2 text-warning">
+              Price (Silver)
             </div>
             <div className="w-8"></div>
           </div>
 
           {rows.map((row) => (
-            <div key={row.id} className="flex items-center gap-3 group/row">
-              <div className="flex-1 relative">
+            <div
+              key={row.id}
+              className="flex items-center gap-2 md:gap-3 group/row"
+            >
+              <div className="flex-1">
                 <input
                   type="text"
                   inputMode="numeric"
                   placeholder="0"
                   value={row.qty}
-                  onKeyDown={blockInvalidCharInt}
+                  onKeyDown={(e) => {
+                    blockInvalidCharInt(e as any);
+                    if (e.key === "Enter") e.currentTarget.blur();
+                  }}
+                  enterKeyHint="done"
                   onChange={(e) => updateRow(row.id, "qty", e.target.value)}
-                  className="w-full bg-base-content/5 border border-base-content/10 rounded-2xl py-3 px-4 text-sm font-black outline-none focus:border-primary/50 focus:bg-primary/5 transition-colors placeholder:opacity-30 shadow-inner"
+                  className="w-full bg-base-content/5 border border-base-content/10 rounded-xl md:rounded-2xl py-2.5 md:py-3 px-3 md:px-4 text-xs md:text-sm font-black outline-none focus:border-primary/50 focus:bg-primary/5 transition-colors shadow-inner"
                 />
               </div>
 
-              <div className="flex-1 relative">
+              <div className="flex-1">
                 <input
                   type="text"
                   inputMode="numeric"
                   placeholder="0"
                   value={row.price}
-                  onKeyDown={blockInvalidCharInt}
+                  onKeyDown={(e) => {
+                    blockInvalidCharInt(e as any);
+                    if (e.key === "Enter") e.currentTarget.blur();
+                  }}
+                  enterKeyHint="done"
                   onChange={(e) => updateRow(row.id, "price", e.target.value)}
-                  className="w-full bg-base-content/5 border border-base-content/10 rounded-2xl py-3 px-4 text-sm font-black outline-none focus:border-warning/50 focus:bg-warning/5 text-warning transition-colors placeholder:opacity-30 shadow-inner"
+                  className="w-full bg-base-content/5 border border-base-content/10 rounded-xl md:rounded-2xl py-2.5 md:py-3 px-3 md:px-4 text-xs md:text-sm font-black outline-none focus:border-warning/50 focus:bg-warning/5 text-warning transition-colors shadow-inner"
                 />
               </div>
 
               <button
                 onClick={() => removeRow(row.id)}
                 disabled={rows.length === 1}
-                className="btn btn-ghost btn-sm btn-square text-error/30 hover:text-error hover:bg-error/10 disabled:opacity-10 disabled:bg-transparent rounded-xl transition-colors"
+                className="btn btn-ghost btn-xs md:btn-sm btn-square text-error/30 hover:text-error hover:bg-error/10 disabled:opacity-0 rounded-xl transition-colors shrink-0"
               >
-                <Trash2 size={18} />
+                <Trash2 size={16} />
               </button>
             </div>
           ))}
+        </div>
 
+        <div className="p-4 md:p-7 bg-base-200 border-t border-base-content/5 shrink-0 z-20 pb-8 md:pb-7 flex flex-col">
           <button
             onClick={addRow}
-            className="w-full py-3.5 rounded-2xl border border-dashed border-base-content/20 text-base-content/50 hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-colors text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 mt-4 outline-none"
+            className="w-full py-2.5 md:py-3 mb-4 md:mb-5 rounded-xl md:rounded-2xl border border-dashed border-base-content/20 text-base-content/50 hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-colors text-[9px] md:text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 outline-none shrink-0"
           >
             <Plus size={14} strokeWidth={2.5} /> Add Purchase Row
           </button>
-        </div>
 
-        <div className="p-7 bg-base-200 border-t border-base-content/5 shrink-0 relative z-10">
-          <div className="flex justify-between items-center mb-5 px-1">
-            <div className="w-1/3">
-              <p className="text-[9px] font-black uppercase opacity-40 mb-1 tracking-widest flex items-center gap-1">
+          <div className="flex justify-between items-center mb-4 md:mb-5 px-1">
+            <div className="text-center md:text-left">
+              <p className="text-[8px] md:text-[9px] font-black uppercase opacity-40 mb-1 tracking-widest flex items-center gap-1 justify-center md:justify-start">
                 <ShoppingCart size={10} /> TO BUY
               </p>
-              <p className="text-sm font-black text-error">
+              <p className="text-xs md:text-sm font-black text-error">
                 {toBuy.toLocaleString()}
               </p>
             </div>
-
-            <div className="w-px h-8 bg-base-content/10"></div>
-
-            <div className="w-1/3 text-center">
-              <p className="text-[9px] font-black uppercase opacity-40 mb-1 tracking-widest">
-                PURCHASED
+            <div className="w-px h-6 md:h-8 bg-base-content/10"></div>
+            <div className="text-center">
+              <p className="text-[8px] md:text-[9px] font-black uppercase opacity-40 mb-1 tracking-widest">
+                GOT
               </p>
               <p
-                className={`text-sm font-black ${totalQty >= toBuy ? "text-success" : "text-base-content"}`}
+                className={`text-xs md:text-sm font-black ${totalQty >= toBuy ? "text-success" : "text-base-content"}`}
               >
                 {totalQty.toLocaleString()}
               </p>
             </div>
-
-            <div className="w-px h-8 bg-base-content/10"></div>
-
-            <div className="w-1/3 text-right">
-              <p className="text-[9px] font-black uppercase opacity-40 mb-1 tracking-widest">
+            <div className="w-px h-6 md:h-8 bg-base-content/10"></div>
+            <div className="text-center md:text-right">
+              <p className="text-[8px] md:text-[9px] font-black uppercase opacity-40 mb-1 tracking-widest">
                 TOTAL COST
               </p>
-              <p className="text-sm font-black text-error truncate">
+              <p className="text-xs md:text-sm font-black text-error truncate max-w-20 md:max-w-none">
                 {totalCost.toLocaleString()}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex-1 bg-info/10 border border-info/20 rounded-2xl p-4 flex flex-col justify-center shadow-inner relative overflow-hidden">
-              <span className="text-[9px] font-black uppercase text-info opacity-70 tracking-widest mb-1">
+          <div className="flex flex-col md:flex-row gap-3">
+            <div className="flex-1 bg-info/10 border border-info/20 rounded-xl md:rounded-2xl p-3 md:p-4 flex flex-col justify-center shadow-inner relative overflow-hidden">
+              <span className="text-[8px] md:text-[9px] font-black uppercase text-info opacity-70 tracking-widest mb-0.5 md:mb-1">
                 Average Price
               </span>
-              <span className="text-xl font-black text-info leading-none tracking-tight">
+              <span className="text-lg md:text-xl font-black text-info leading-none tracking-tight">
                 {avgPrice.toLocaleString()}{" "}
                 <span className="text-[10px] opacity-50 ml-1">/ unit</span>
               </span>
@@ -223,7 +255,7 @@ export default function AveragePriceModal({
             <button
               onClick={handleApply}
               disabled={avgPrice <= 0}
-              className="h-18.5 px-8 rounded-2xl bg-primary text-primary-content font-black text-xs uppercase tracking-[0.2em] hover:bg-primary/90 transition-colors active:scale-95 disabled:opacity-30 disabled:pointer-events-none flex flex-col items-center justify-center gap-1"
+              className="h-14 md:h-18.5 md:px-8 rounded-xl md:rounded-2xl bg-primary text-primary-content font-black text-xs uppercase tracking-[0.2em] hover:bg-primary/90 transition-colors active:scale-95 disabled:opacity-30 flex items-center justify-center gap-2"
             >
               <Check size={20} strokeWidth={3} />
               Apply

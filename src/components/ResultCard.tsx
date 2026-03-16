@@ -63,14 +63,7 @@ export default function ResultCard({ data }: any) {
     title: string;
     tip: React.ReactNode;
   }) => (
-    <div
-      className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3
-                    bg-base-200 text-base-content p-4 rounded-2xl 
-                    shadow-xl border border-base-content/10
-                    opacity-0 invisible group-hover/tip:opacity-100 group-hover/tip:visible 
-                    transition-opacity duration-100 z-9999 w-max min-w-60 
-                    origin-bottom pointer-events-none"
-    >
+    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 bg-base-200 text-base-content p-4 rounded-2xl shadow-xl border border-base-content/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-100 z-9999 w-max min-w-60 origin-bottom pointer-events-none lg:block hidden">
       <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-base-200 rotate-45 border-b border-r border-base-content/10"></div>
       <p className="text-[10px] font-black uppercase text-primary mb-2 border-b border-base-content/10 pb-1.5 tracking-widest">
         {title}
@@ -87,7 +80,7 @@ export default function ResultCard({ data }: any) {
       className="w-full relative space-y-6 select-none outline-none"
     >
       <div
-        className={`relative z-10 px-7 py-5 flex justify-between items-center rounded-[1.75rem] border border-base-content/10 shadow-sm ${isDefaultStyle ? "bg-base-content/5" : isProfit ? "bg-success/10 border-success/20" : "bg-error/10 border-error/20"}`}
+        className={`relative z-10 px-4 py-4 md:px-7 md:py-5 flex flex-col md:flex-row md:justify-between md:items-center rounded-[1.75rem] border border-base-content/10 shadow-sm gap-4 ${isDefaultStyle ? "bg-base-content/5" : isProfit ? "bg-success/10 border-success/20" : "bg-error/10 border-error/20"}`}
       >
         <div className="absolute inset-0 rounded-[1.75rem] overflow-hidden pointer-events-none">
           <div
@@ -95,99 +88,91 @@ export default function ResultCard({ data }: any) {
           ></div>
         </div>
 
-        <div className="flex items-center gap-6 z-10">
+        <div className="flex items-center gap-4 md:gap-6 z-10 overflow-hidden">
           <div
-            className={`p-4 rounded-2xl shadow-sm border border-white/5 ${
-              isDefaultStyle
-                ? "bg-base-content/10 text-base-content/50"
-                : isProfit
-                  ? "bg-success/20 text-success"
-                  : "bg-error/20 text-error"
-            }`}
+            className={`p-3 md:p-4 rounded-2xl shadow-sm border border-white/5 shrink-0 ${isDefaultStyle ? "bg-base-content/10 text-base-content/50" : isProfit ? "bg-success/20 text-success" : "bg-error/20 text-error"}`}
           >
             {isNonCraftable ? (
-              <Slash size={26} />
+              <Slash size={24} />
             ) : isDefaultStyle ? (
-              <PackageSearch size={26} />
+              <PackageSearch size={24} />
             ) : isProfit ? (
-              <TrendingUp size={26} />
+              <TrendingUp size={24} />
             ) : (
-              <TrendingDown size={26} />
+              <TrendingDown size={24} />
             )}
           </div>
-          <div className={isDefaultStyle ? "opacity-40" : ""}>
-            <h2 className="text-base font-black uppercase tracking-[0.15em] flex items-center gap-3">
-              {isWaiting ? "---" : data.name}
+
+          <div
+            className={`min-w-0 flex-1 ${isDefaultStyle ? "opacity-40" : ""}`}
+          >
+            <div className="flex flex-col md:flex-row md:items-center gap-2">
+              <h2 className="text-sm md:text-base font-black uppercase tracking-widest leading-tight md:leading-none md:truncate md:max-w-62.5 lg:max-w-none pr-6 md:pr-0">
+                {isWaiting ? "---" : data.name}
+              </h2>
               <span
-                className={`font-black text-[10px] tracking-widest px-2.5 py-1 rounded-lg ${
-                  isDefaultStyle
-                    ? "bg-base-content/10 opacity-40"
-                    : focusShortage && data.useFocus
-                      ? "bg-warning text-warning-content"
-                      : materialShortage
-                        ? "bg-error text-error-content"
-                        : "bg-base-content/10 opacity-40"
-                }`}
+                className={`w-fit font-black text-[9px] px-2 py-0.5 rounded-lg whitespace-nowrap ${isDefaultStyle ? "bg-base-content/10 opacity-40" : focusShortage && data.useFocus ? "bg-warning text-warning-content" : materialShortage ? "bg-error text-error-content" : "bg-base-content/10 opacity-40"}`}
               >
                 {focusShortage && data.useFocus
-                  ? "FOCUS LIMIT"
+                  ? "FOCUS"
                   : materialShortage
-                    ? "MATERIAL LIMIT"
+                    ? "MAT"
                     : "OUT"}
                 : {totalProduced.toLocaleString()}
               </span>
-            </h2>
-            <div className="flex gap-5 items-center mt-1">
+            </div>
+
+            <div className="mt-2 md:mt-1 flex flex-col md:flex-row md:items-center gap-1 md:gap-5">
               <span
-                className={`text-2xl font-black tracking-tight ${!isDefaultStyle && (isProfit ? "text-success" : "text-error")}`}
+                className={`text-xl md:text-2xl font-black tracking-tight leading-none ${!isDefaultStyle && (isProfit ? "text-success" : "text-error")}`}
               >
                 {isProfit && !isDefaultStyle ? "+" : ""}
-                {data.realProfit ? data.realProfit.toLocaleString() : "0"}{" "}
-                <span className="text-xs opacity-50 uppercase tracking-widest ml-1">
+                {data.realProfit ? data.realProfit.toLocaleString() : "0"}
+                <span className="text-[10px] opacity-50 uppercase ml-1.5 font-bold">
                   Silver
                 </span>
               </span>
-              <div className="w-1.5 h-1.5 rounded-full bg-base-content/20"></div>
-              <span className="text-base font-black tracking-wider text-info">
+              <div className="hidden md:block w-1.5 h-1.5 rounded-full bg-base-content/20"></div>
+              <span className="text-xs md:text-base font-black tracking-wider text-info leading-none">
                 MARGIN: {data.margin ? data.margin : "0"}%
               </span>
             </div>
           </div>
         </div>
+
         <button
           onClick={handleCopyReport}
           disabled={isDefaultStyle}
-          className="btn btn-ghost btn-square opacity-40 hover:opacity-100 text-base-content rounded-xl border-none shadow-none"
+          className="absolute top-4 right-4 md:static btn btn-ghost btn-square opacity-40 hover:opacity-100 text-base-content rounded-xl border-none shadow-none z-20"
         >
           {copied ? (
-            <CheckCircle2 size={20} className="text-success" />
+            <CheckCircle2 size={18} className="text-success" />
           ) : (
-            <Copy size={20} />
+            <Copy size={18} />
           )}
         </button>
       </div>
 
-      <div className="z-0 flex flex-col gap-3">
+      <div className="z-0 flex flex-col gap-2">
         {materialShortage && !isNonCraftable && (
-          <div className="bg-error/10 p-4 rounded-2xl flex items-center gap-4 border border-error/20 shadow-sm">
-            <AlertOctagon size={20} className="text-error" />
-            <span className="text-[11px] font-black uppercase tracking-widest text-base-content">
-              Material limited to{" "}
+          <div className="bg-error/10 p-3 rounded-2xl flex items-center gap-3 border border-error/20 shadow-sm">
+            <AlertOctagon size={16} className="text-error shrink-0" />
+            <span className="text-[10px] font-black uppercase tracking-widest leading-normal">
+              Mat limit:{" "}
               <span className="text-error font-bold">
-                {data.marketLimitedQty}
+                {data.marketLimitedQty.toLocaleString()}
               </span>{" "}
               crafts
             </span>
           </div>
         )}
-
         {focusShortage && !isNonCraftable && (
-          <div className="bg-warning/10 p-4 rounded-2xl flex items-center gap-4 border border-warning/20 shadow-sm">
-            <AlertTriangle size={20} className="text-warning" />
-            <span className="text-[11px] font-black uppercase tracking-widest text-base-content">
-              Focus points limited to{" "}
+          <div className="bg-warning/10 p-3 rounded-2xl flex items-center gap-3 border border-warning/20 shadow-sm">
+            <AlertTriangle size={16} className="text-warning shrink-0" />
+            <span className="text-[10px] font-black uppercase tracking-widest leading-normal">
+              Focus limit:{" "}
               <span className="text-warning font-bold">
-                {data.focusLimitedQty}
+                {data.focusLimitedQty.toLocaleString()}
               </span>{" "}
               crafts
             </span>
@@ -195,7 +180,7 @@ export default function ResultCard({ data }: any) {
         )}
       </div>
 
-      <div className="grid grid-cols-4 gap-4 relative z-20">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 relative z-20">
         {[
           {
             label: "Net Margin",
@@ -224,13 +209,15 @@ export default function ResultCard({ data }: any) {
         ].map((stat, i) => (
           <div
             key={i}
-            className="bg-base-200/90 p-5 rounded-2xl border border-base-content/5 relative group/tip cursor-help hover:border-base-content/10 shadow-sm"
+            className="bg-base-200/90 p-3 md:p-5 rounded-2xl border border-base-content/5 relative group cursor-help shadow-sm overflow-visible"
           >
             <div className={isDefaultStyle ? "opacity-30" : ""}>
-              <p className="text-[10px] font-black uppercase opacity-40 mb-2 flex items-center gap-2">
-                {stat.label} <Info size={11} />
+              <p className="text-[8px] md:text-[10px] font-black uppercase opacity-40 mb-1 flex items-center gap-1.5 truncate">
+                {stat.label} <Info size={10} className="md:block hidden" />
               </p>
-              <p className={`text-lg font-black tracking-tight ${stat.color}`}>
+              <p
+                className={`text-xs md:text-lg font-black tracking-tight truncate ${stat.color}`}
+              >
                 {stat.val}
               </p>
             </div>
@@ -239,24 +226,24 @@ export default function ResultCard({ data }: any) {
         ))}
       </div>
 
-      <div className="grid grid-cols-3 gap-4 relative z-30">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 relative z-30">
         {[
           {
-            icon: <ShieldCheck size={18} />,
+            icon: <ShieldCheck size={16} />,
             label: "Break-even",
             val: breakEvenPrice || 0,
             color: "success",
             tip: "Minimum price to sell without loss",
           },
           {
-            icon: <Target size={18} />,
+            icon: <Target size={16} />,
             label: "Recommended",
             val: recommendedPrice || 0,
             color: "info",
             tip: "Target price for healthy 15% profit",
           },
           {
-            icon: <Zap size={18} />,
+            icon: <Zap size={16} />,
             label: "Efficiency",
             val: data.silverPerFocus || 0,
             color: "warning",
@@ -265,20 +252,28 @@ export default function ResultCard({ data }: any) {
         ].map((box, i) => (
           <div
             key={i}
-            className="bg-base-200/90 p-6 rounded-2xl border border-base-content/5 relative group/tip cursor-help shadow-sm hover:border-base-content/10"
+            className="bg-base-200/90 p-4 md:p-6 rounded-2xl border border-base-content/5 relative group cursor-help shadow-sm flex md:block items-center justify-between gap-2 overflow-visible"
           >
-            <div className={isDefaultStyle ? "opacity-30" : ""}>
-              <div className={`flex items-center gap-2 mb-3 text-${box.color}`}>
-                <div className={`text-${box.color}`}>{box.icon}</div>
-                <span className="text-[10px] font-black uppercase tracking-widest">
+            <div
+              className={
+                isDefaultStyle
+                  ? "opacity-30"
+                  : "flex md:block items-center gap-2"
+              }
+            >
+              <div
+                className={`flex items-center gap-2 text-${box.color} md:mb-2`}
+              >
+                {box.icon}
+                <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">
                   {box.label}
                 </span>
               </div>
               <p
-                className={`text-2xl font-black tracking-tighter text-${box.color}`}
+                className={`text-lg md:text-2xl font-black tracking-tighter text-${box.color}`}
               >
                 {box.val.toLocaleString()}{" "}
-                <span className="text-[10px] opacity-50 font-bold ml-1">
+                <span className="text-[9px] opacity-50 font-bold ml-1">
                   S/U
                 </span>
               </p>
@@ -289,134 +284,113 @@ export default function ResultCard({ data }: any) {
       </div>
 
       <div className="relative z-0 border border-base-content/10 rounded-3xl bg-base-200/50 overflow-hidden shadow-sm">
-        <table className="w-full text-xs text-left border-collapse border-none">
-          <thead className="bg-base-content/5 text-[10px] font-black uppercase opacity-40 tracking-[0.2em] border-b border-base-content/5">
-            <tr>
-              <th className="px-6 py-4 border-none font-black">Item Name</th>
-              <th className="px-6 py-4 text-right border-none font-black">
-                To Buy
-              </th>
-              <th className="px-6 py-4 text-right border-none font-black">
-                In Bag
-              </th>
-              <th className="px-6 py-4 text-right border-none font-black">
-                Mkt Stk
-              </th>
-              <th className="px-6 py-4 text-right border-none font-black">
-                Cost
-              </th>
-            </tr>
-          </thead>
-          <tbody className="font-bold border-none">
-            {isDefaultStyle ? (
-              <tr className="border-none">
-                <td
-                  colSpan={5}
-                  className={`px-6 py-10 text-center border-none ${isNonCraftable ? "bg-error/5 text-error animate-pulse" : "text-base-content/20"}`}
-                >
-                  {isNonCraftable
-                    ? "ITEM IS NON-CRAFTABLE (NO RECIPE)"
-                    : "AWAITING ITEM SELECTION..."}
-                </td>
+        <div className="overflow-x-auto w-full">
+          <table className="w-full min-w-112.5 md:min-w-full text-xs text-left border-collapse border-none">
+            <thead className="bg-base-content/5 text-[9px] font-black uppercase opacity-40 tracking-widest border-b border-base-content/5">
+              <tr>
+                <th className="px-4 md:px-6 py-3 md:py-4 font-black">Item</th>
+                <th className="px-4 md:px-6 py-3 md:py-4 text-right font-black">
+                  Buy
+                </th>
+                <th className="px-4 md:px-6 py-3 md:py-4 text-right font-black">
+                  Bag
+                </th>
+                <th className="px-4 md:px-6 py-3 md:py-4 text-right font-black">
+                  Mkt
+                </th>
+                <th className="px-4 md:px-6 py-3 md:py-4 text-right font-black">
+                  Cost
+                </th>
               </tr>
-            ) : (
-              data.buyList.map((m: any) => (
-                <tr
-                  key={m.name}
-                  className="border-b border-base-content/5 last:border-none hover:bg-base-content/5"
-                >
-                  <td className="px-6 py-4 text-info font-black truncate max-w-56 border-none">
-                    {m.name}
-                  </td>
-                  <td className="px-6 py-4 text-right text-error border-none">
-                    {m.qtyToBuy.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 text-right text-success border-none">
-                    {m.stock.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 text-right opacity-30 italic font-medium border-none">
-                    {m.marketStock > 0 ? m.marketStock.toLocaleString() : "∞"}
-                  </td>
-                  <td className="px-6 py-4 text-right text-warning border-none">
-                    {m.cost.toLocaleString()} S
+            </thead>
+            <tbody className="font-bold">
+              {isWaiting ? (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="px-4 py-8 md:py-10 text-center opacity-20 uppercase tracking-widest text-[10px]"
+                  >
+                    Awaiting selection
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : isNonCraftable ? (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="px-4 py-8 md:py-10 text-center border-none bg-error/5 text-error animate-pulse uppercase tracking-widest text-[10px] font-black leading-relaxed"
+                  >
+                    <span className="block md:inline">
+                      Item is Non-Craftable
+                    </span>
+                    <span className="block md:inline md:ml-1">
+                      (No Recipe Found)
+                    </span>
+                  </td>
+                </tr>
+              ) : (
+                data.buyList.map((m: any) => (
+                  <tr
+                    key={m.name}
+                    className="border-b border-base-content/5 last:border-none hover:bg-base-content/5"
+                  >
+                    <td className="px-4 md:px-6 py-3 md:py-4 text-info font-black truncate max-w-27.5 md:max-w-none">
+                      {m.name}
+                    </td>
+                    <td className="px-4 md:px-6 py-3 md:py-4 text-right text-error">
+                      {m.qtyToBuy.toLocaleString()}
+                    </td>
+                    <td className="px-4 md:px-6 py-3 md:py-4 text-right text-success">
+                      {m.stock.toLocaleString()}
+                    </td>
+                    <td className="px-4 md:px-6 py-3 md:py-4 text-right opacity-30">
+                      {m.marketStock > 0 ? m.marketStock.toLocaleString() : "∞"}
+                    </td>
+                    <td className="px-4 md:px-6 py-3 md:py-4 text-right text-warning whitespace-nowrap">
+                      {m.cost.toLocaleString()} S
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-8 relative z-40">
-        <div className="relative group/tip">
-          <div className="p-6 bg-base-content/5 rounded-3xl border border-base-content/5 flex justify-between items-center shadow-sm hover:bg-base-content/10 cursor-help">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-8 relative z-40">
+        {[
+          {
+            label: "Total Production Cost",
+            val: data.netProductionCost || 0,
+            color: "warning",
+            tip: `Materials: ${(data.totalMaterialCost || 0).toLocaleString()} S / Tax: ${(data.totalTaxCost || 0).toLocaleString()} S`,
+          },
+          {
+            label: "Net Revenue After Tax",
+            val: data.totalRevenue || 0,
+            color: "info",
+            tip: `Gross: ${(data.grossRevenue || 0).toLocaleString()} S / Market Tax: -${(data.marketFeeDeduction || 0).toLocaleString()} S`,
+          },
+        ].map((sum, i) => (
+          <div
+            key={i}
+            className="group p-4 md:p-6 bg-base-content/5 rounded-3xl border border-base-content/5 flex items-center justify-between shadow-sm relative cursor-help overflow-visible"
+          >
             <span
-              className={`text-[10px] font-black uppercase opacity-60 tracking-[0.15em] ${isDefaultStyle ? "opacity-20" : ""}`}
+              className={`text-[9px] font-black uppercase opacity-60 tracking-widest max-w-25 md:max-w-none leading-tight ${isDefaultStyle ? "opacity-20" : ""}`}
             >
-              Total Production Cost
+              {sum.label}
             </span>
             <span
-              className={`text-xl font-black tracking-tighter ${isDefaultStyle ? "opacity-20" : "text-warning"}`}
+              className={`text-lg md:text-xl font-black tracking-tighter whitespace-nowrap ${isDefaultStyle ? "opacity-20" : `text-${sum.color}`}`}
             >
-              {(data.netProductionCost || 0).toLocaleString()}{" "}
-              <span className="text-xs opacity-50 ml-1 font-bold">Silver</span>
+              {sum.val.toLocaleString()}{" "}
+              <span className="text-[9px] opacity-50 ml-1 font-bold">
+                Silver
+              </span>
             </span>
+            <SultanTooltip title={sum.label} tip={sum.tip} />
           </div>
-          <SultanTooltip
-            title="Cost Breakdown"
-            tip={
-              <div className="space-y-1.5 min-w-45">
-                <div className="flex justify-between">
-                  <span>Materials:</span>
-                  <span className="text-warning font-black">
-                    {(data.totalMaterialCost || 0).toLocaleString()} S
-                  </span>
-                </div>
-                <div className="flex justify-between border-t border-base-content/10 pt-1">
-                  <span>Station Fee:</span>
-                  <span className="text-warning font-black">
-                    {(data.totalTaxCost || 0).toLocaleString()} S
-                  </span>
-                </div>
-              </div>
-            }
-          />
-        </div>
-
-        <div className="relative group/tip">
-          <div className="p-6 bg-base-content/5 rounded-3xl border border-base-content/5 flex justify-between items-center shadow-sm hover:bg-base-content/10 cursor-help">
-            <span
-              className={`text-[10px] font-black uppercase opacity-60 tracking-[0.15em] ${isDefaultStyle ? "opacity-20" : ""}`}
-            >
-              Net Revenue After Tax
-            </span>
-            <span
-              className={`text-xl font-black tracking-tighter ${isDefaultStyle ? "opacity-20" : "text-info"}`}
-            >
-              {(data.totalRevenue || 0).toLocaleString()}{" "}
-              <span className="text-xs opacity-50 ml-1 font-bold">Silver</span>
-            </span>
-          </div>
-          <SultanTooltip
-            title="Revenue Breakdown"
-            tip={
-              <div className="space-y-1.5 min-w-45">
-                <div className="flex justify-between">
-                  <span>Gross Sales:</span>
-                  <span className="text-info font-black">
-                    {(data.grossRevenue || 0).toLocaleString()} S
-                  </span>
-                </div>
-                <div className="flex justify-between border-t border-base-content/10 pt-1">
-                  <span>Market Tax:</span>
-                  <span className="text-error font-black">
-                    -{(data.marketFeeDeduction || 0).toLocaleString()} S
-                  </span>
-                </div>
-              </div>
-            }
-          />
-        </div>
+        ))}
       </div>
     </div>
   );
