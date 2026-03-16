@@ -1,0 +1,7 @@
+keytool -genkey -v -keystore avalonian.jks -keyalg RSA -keysize 2048 -validity 10000 -alias avalonian
+
+
+export TAURI_ANDROID_KEYSTORE=""
+export TAURI_ANDROID_KEYSTORE_PASSWORD="" 
+export TAURI_ANDROID_KEY_ALIAS=""
+export TAURI_ANDROID_KEY_PASSWORD=""     
