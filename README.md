@@ -19,20 +19,21 @@
 
 ---
 
-## ✨ Features (v1.0.0 - The Rebirth)
+## ✨ Features (v1.2.0 - The Mobile Era)
 
-- **⚡ Blazing Fast Local DB**: Powered by Rust & SQLite. Item searches and filtering are instant, with zero lag or stutter.
-- **🎨 Premium UI/UX**: A sleek, dark-mode native interface featuring smooth animations and keyboard navigation experience.
+- **📱 True Native Mobile Experience**: Seamlessly adapts to Android with edge-to-edge layout, transparent system bars, smart hardware back-button handling, and auto-hide keyboard interactions.
+- **⚡ Blazing Fast Local DB**: Powered by Rust & SQLite. Item searches and filtering are instant, with zero lag or stutter across all platforms.
+- **🎨 Premium Hybrid UI/UX**: A sleek, dark-mode interface featuring smooth animations, desktop keyboard navigation, and thumb-friendly mobile modals.
 - **📈 Advanced Crafting Calculator**: Calculate true profit margins with dynamic Item Values, Return Rate (RRR), Focus costs, and market fees.
-- **🤖 CI/CD Automation**: Fully automated build pipeline. New `.exe` and `.deb` files are generated directly via GitHub Actions.
+- **🤖 CI/CD Automation**: Fully automated build pipeline. New `.exe`, `.AppImage`, `.deb`, and **`.apk`** files are generated directly via GitHub Actions.
 
 ## 🚀 Download & Install
 
-You don't need to build it yourself!
-Head over to the **[Releases Page](../../releases)** to download the latest compiled version:
+Grab the latest version for your device from the [Releases](../../releases) page!
 
-- **Windows**: Download the `.exe` installer.
-- **Linux (Debian/Ubuntu/Pop!\_OS)**: Download the `.deb` package.
+- **🤖 Android**: Download the `Avalonian-Tools-v1.2.0-universal-release.apk` and install it directly on your phone.
+- **🪟 Windows**: Download and run the `.exe` or `.msi` installer.
+- **🐧 Linux**: Download the `.AppImage` (portable) or `.deb` package.
 
 ---
 
@@ -40,7 +41,7 @@ Head over to the **[Releases Page](../../releases)** to download the latest comp
 
 This project leverages a modern, high-performance stack:
 
-- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, DaisyUI, Framer Motion
+- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, DaisyUI
 - **Backend**: Rust, Tauri v2, SQLite (rusqlite)
 - **DevOps**: GitHub Actions (Automated CI/CD Builds)
 

@@ -16,6 +16,19 @@ val tauriProperties = Properties().apply {
 android {
     compileSdk = 36
     namespace = "com.xamnes.avalonian_tools"
+
+    signingConfigs {
+        create("release") {
+            val keystorePath = System.getenv("TAURI_ANDROID_KEYSTORE")
+            if (keystorePath != null) {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("TAURI_ANDROID_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("TAURI_ANDROID_KEY_ALIAS")
+                keyPassword = System.getenv("TAURI_ANDROID_KEY_PASSWORD")
+            }
+        }
+    }
+
     defaultConfig {
         manifestPlaceholders["usesCleartextTraffic"] = "false"
         applicationId = "com.xamnes.avalonian_tools"
@@ -30,7 +43,8 @@ android {
             isDebuggable = true
             isJniDebuggable = true
             isMinifyEnabled = false
-            packaging {                jniLibs.keepDebugSymbols.add("*/arm64-v8a/*.so")
+            packaging {                
+                jniLibs.keepDebugSymbols.add("*/arm64-v8a/*.so")
                 jniLibs.keepDebugSymbols.add("*/armeabi-v7a/*.so")
                 jniLibs.keepDebugSymbols.add("*/x86/*.so")
                 jniLibs.keepDebugSymbols.add("*/x86_64/*.so")
@@ -43,6 +57,7 @@ android {
                     .plus(getDefaultProguardFile("proguard-android-optimize.txt"))
                     .toList().toTypedArray()
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     kotlinOptions {

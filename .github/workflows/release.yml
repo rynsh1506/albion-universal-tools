@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-tauri:
+  build:
     permissions:
       contents: write
     strategy:
@@ -15,11 +15,11 @@ jobs:
       matrix:
         include:
           - platform: "windows-latest"
-            args: ""
+            build: "desktop"
           - platform: "ubuntu-22.04"
-            args: ""
+            build: "desktop"
           - platform: "ubuntu-22.04"
-            args: "--target android"
+            build: "android"
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -38,18 +38,24 @@ jobs:
           targets: aarch64-linux-android, armv7-linux-androideabi, i686-linux-android, x86_64-linux-android
 
       - name: Setup Java (Android Only)
-        if: contains(matrix.args, 'android')
+        if: matrix.build == 'android'
         uses: actions/setup-java@v4
         with:
           distribution: "zulu"
           java-version: "17"
 
       - name: Setup Android SDK (Android Only)
-        if: contains(matrix.args, 'android')
+        if: matrix.build == 'android'
         uses: android-actions/setup-android@v3
 
-      - name: Install Linux dependencies (Ubuntu Only)
-        if: matrix.platform == 'ubuntu-22.04'
+      - name: Setup NDK (Android Only)
+        if: matrix.build == 'android'
+        run: |
+          sdkmanager "ndk;29.0.14206865"
+          echo "NDK_HOME=$ANDROID_HOME/ndk/29.0.14206865" >> $GITHUB_ENV
+
+      - name: Install Linux dependencies (Ubuntu Desktop Only)
+        if: matrix.platform == 'ubuntu-22.04' && matrix.build == 'desktop'
         run: |
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
@@ -57,7 +63,11 @@ jobs:
       - name: Install Frontend Dependencies
         run: npm install
 
-      - name: Build Tauri App & Create Release
+      # ==========================================
+      # 💻 DESKTOP BUILD (Windows & Linux)
+      # ==========================================
+      - name: Build Desktop App & Create Release
+        if: matrix.build == 'desktop'
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -72,9 +82,44 @@ jobs:
             ### 📱 Supported Platforms:
             - **Windows**: `.msi` / `.exe`
             - **Linux**: `.AppImage` / `.deb`
-            - **Android**: `.apk` (Universal Architecture)
+            - **Android**: `.apk`
 
             *Just download and install the version compatible with your device!*
           releaseDraft: false
           prerelease: false
-          args: ${{ matrix.args }}
+
+      # ==========================================
+      # 📱 ANDROID BUILD (APK)
+      # ==========================================
+      - name: Build Android APK
+        if: matrix.build == 'android'
+        env:
+          TAURI_ANDROID_KEYSTORE: "${{ github.workspace }}/avalonian.jks"
+          TAURI_ANDROID_KEYSTORE_PASSWORD: "${{ secrets.KEYSTORE_PASSWORD }}"
+          TAURI_ANDROID_KEY_ALIAS: "${{ secrets.KEY_ALIAS }}"
+          TAURI_ANDROID_KEY_PASSWORD: "${{ secrets.KEY_PASSWORD }}"
+        run: |
+          printf "%s" "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/avalonian.jks
+          npx tauri android build --apk
+
+      - name: Get Version from package.json
+        id: app_version
+        if: matrix.build == 'android'
+        run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Extract & Rename APKs (Android Only)
+        if: matrix.build == 'android'
+        run: |
+          mkdir -p release-apks
+          find src-tauri/gen/android/app/build/outputs/apk -name "*.apk" -type f -exec cp {} release-apks/ \;
+          cd release-apks
+          for file in *.apk; do mv "$file" "Avalonian-Tools-v${{ steps.app_version.outputs.VERSION }}-$file"; done
+
+      - name: Upload Android APK to Release
+        if: matrix.build == 'android'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.app_version.outputs.VERSION }}
+          files: release-apks/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
